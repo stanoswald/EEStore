@@ -1,5 +1,6 @@
 package cn.stanoswald.eestore.config;
 
+import cn.stanoswald.eestore.service.impl.PersistentLoginServiceImpl;
 import cn.stanoswald.eestore.service.impl.UserDetailsServiceImpl;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -12,6 +13,8 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
+
 
 @EnableWebSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
@@ -30,6 +33,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .failureForwardUrl("/auth/login/failure")
                 .permitAll().and()
                 .httpBasic().disable()
+                .rememberMe().userDetailsService(userDetailsService())
+                .tokenRepository(persistentTokenRepository()).tokenValiditySeconds(60 * 60 * 24 * 7).and()
+                .logout().logoutUrl("/auth/logout").logoutSuccessUrl("/auth/logout/success").permitAll().and()
                 .csrf().disable();
     }
 
@@ -50,6 +56,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     public AuthenticationManager authenticationManagerBean() throws Exception {
         return super.authenticationManagerBean();
+    }
+
+    @Bean
+    public PersistentTokenRepository persistentTokenRepository() {
+        return new PersistentLoginServiceImpl();
     }
 
     @Bean

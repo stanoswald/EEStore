@@ -8,10 +8,11 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
+
 @RestController
 @RequestMapping("/auth")
 public class AuthController {
-
 
     @GetMapping("unauthorized")
     public ResponseEntity<Object> unauthorized() {
@@ -34,10 +35,17 @@ public class AuthController {
 
     @PostMapping("login/failure")
     public ResponseEntity<Object> loginFailure(@RequestAttribute("SPRING_SECURITY_LAST_EXCEPTION") AuthenticationException exception) {
-
         return new CommonResponse.Builder()
-                .ok().message("登录失败")
+                .error().message("登录失败")
                 .data("info", exception.getMessage()).build();
+    }
+
+    @GetMapping("/logout/success")
+    public ResponseEntity<Object> logoutSuccess(HttpServletRequest request) {
+        System.out.println(request);
+        return new CommonResponse.Builder()
+                .ok().message("注销成功")
+                .build();
     }
 
 }
