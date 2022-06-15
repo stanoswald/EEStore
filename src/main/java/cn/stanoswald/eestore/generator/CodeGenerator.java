@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.exceptions.MybatisPlusException;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.generator.FastAutoGenerator;
 import com.baomidou.mybatisplus.generator.config.OutputFile;
+import com.baomidou.mybatisplus.generator.config.TemplateType;
 import com.baomidou.mybatisplus.generator.engine.FreemarkerTemplateEngine;
 
 import java.util.Arrays;
@@ -59,8 +60,8 @@ public class CodeGenerator {
                         .enableSkipView()
                         .addInclude(getTables(scanner("请输入表名，多个英文逗号分隔？all"))).addTablePrefix("tbl_")
                         .entityBuilder().disableSerialVersionUID()
-                        .controllerBuilder().formatFileName("%sController")
-                        .mapperBuilder().formatMapperFileName("%sMapper").formatXmlFileName("%sMapper")
+                        .controllerBuilder().formatFileName("%sController").enableRestStyle()
+                        .mapperBuilder().formatMapperFileName("%sMapper").formatXmlFileName("%sMapper").enableMapperAnnotation().enableBaseResultMap().enableBaseColumnList()
                         .serviceBuilder().formatServiceFileName("%sService").formatServiceImplFileName("%sServiceImpl")
                         .build()
                 )

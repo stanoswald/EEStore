@@ -3,6 +3,7 @@ package cn.stanoswald.eestore.mapper;
 import cn.stanoswald.eestore.entity.Cart;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.*;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
@@ -15,6 +16,7 @@ import java.util.List;
  * @since 2022-06-14
  */
 @Mapper
+@Repository
 public interface CartMapper extends BaseMapper<Cart> {
     @Select("select * from tbl_cart where uid=#{id}")
     List<Cart> getByUid(String id);

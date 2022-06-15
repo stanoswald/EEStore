@@ -19,8 +19,8 @@ import java.util.Map;
  * @author yjw
  * @since 2022-06-14
  */
-@Controller
-@RequestMapping("/cart")
+@RestController
+@RequestMapping("/user/cart")
 public class CartController {
 
     @Resource
