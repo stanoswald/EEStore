@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import java.util.List;
 
 /**
  * <p>
@@ -23,22 +24,25 @@ public class OrderController {
     @Resource
     OrderService orderService;
 
-    @RequestMapping("/create")
-    @PostMapping
+    @PostMapping("create")
     public ResponseEntity<Object> create() {
         return null;
     }
 
-    @RequestMapping("/get")
-    @GetMapping
+    @GetMapping("get")
     public ResponseEntity<Object> get(@RequestParam("order_id") String orderId) {
         Order order = orderService.get(orderId);
         return new CommonResponse.Builder().ok().message("订单获取成功").data("order", order).build();
     }
 
-    @RequestMapping("/finish")
-    @PostMapping
+    @PostMapping("finish")
     public ResponseEntity<Object> finish() {
         return null;
+    }
+
+    @GetMapping("get/to_be_delivered")
+    public ResponseEntity<Object> toBeDelivered() {
+        List<Order> toBeDelivered = orderService.getToBeDelivered();
+        return new CommonResponse.Builder().ok().message("待发货订单获取成功").data("orders", toBeDelivered).build();
     }
 }

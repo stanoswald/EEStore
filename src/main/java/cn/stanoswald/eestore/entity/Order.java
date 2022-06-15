@@ -54,11 +54,13 @@ public class Order {
     /**
      * 发货时间
      */
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "uuuu-MM-dd HH:mm:ss.SSS")
     private LocalDateTime shipTime;
 
     /**
      * 结束时间
      */
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "uuuu-MM-dd HH:mm:ss.SSS")
     private LocalDateTime finishedTime;
 
 

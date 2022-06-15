@@ -10,7 +10,11 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -54,8 +58,11 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
     }
 
     @Override
-    public Boolean finish(String oderId) {
-        return null;
+    public Boolean finish(String orderId) {
+        Order order = new Order();
+        order.setOrderId(orderId);
+        order.setFinishedTime(LocalDateTime.now());
+        return orderMapper.updateById(order) == 1;
     }
 
     @Override
@@ -65,11 +72,25 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
 
     @Override
     public List<Order> getToBeDelivered() {
-        return null;
+        List<Order> orderList = orderMapper.selectList(Wrappers.lambdaQuery(Order.class).isNull(Order::getShipTime));
+        if (orderList.size() > 0) {
+            Set<String> orderIdSet = orderList.stream().map(Order::getOrderId).collect(Collectors.toSet());
+            List<OrderItem> orderItemList = orderItemMapper.selectList(Wrappers.lambdaQuery(OrderItem.class)
+                    .select(OrderItem::getItemId, OrderItem::getItemCount,OrderItem::getOrderId)
+                    .in(OrderItem::getOrderId, orderIdSet));
+
+            Map<String, List<OrderItem>> resMap = orderItemList.stream().collect(Collectors.groupingBy(OrderItem::getOrderId));
+            orderList.forEach(order -> order.setItemList(resMap.get(order.getOrderId())));
+        } else
+            return null;
+        return orderList;
     }
 
     @Override
     public Boolean ship(String orderId) {
-        return null;
+        Order order = new Order();
+        order.setOrderId(orderId);
+        order.setShipTime(LocalDateTime.now());
+        return orderMapper.updateById(order) == 1;
     }
 }
