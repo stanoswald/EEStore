@@ -20,8 +20,11 @@ public interface CartMapper extends BaseMapper<Cart> {
     List<Cart> getByUid(String id);
 
     @Delete("delete from tbl_cart where uid=#{uid} AND cart_id=#{cartId}")
-    Boolean delByIds(String uid,String cartId);
+    Boolean delByIds(String uid, String cartId);
 
-    @Insert("insert into tbl_cart(uid,item_id,item_count) VAlUES (#{uid},#{itemId},#{itemCount})")
-    Boolean insertByUid(String uid,String itemId,String itemCount);
+    @Select("SELECT cart_id FROM tbl_cart WHERE uid=#{uid} AND item_id=#{itemId}")
+    Integer selectCartIdByUidAndItemId(String uid, String itemId);
+
+    @Update("UPDATE tbl_cart SET item_count=item_count+1 WHERE cart_id=#{cartId}")
+    Integer addItemCountByCartId(Integer cartId);
 }

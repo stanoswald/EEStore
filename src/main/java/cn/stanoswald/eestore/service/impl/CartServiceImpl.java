@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -15,13 +16,11 @@ import java.util.List;
  * </p>
  *
  * @author yjw
+ * @author StanOswald
  * @since 2022-06-14
  */
 @Service
 public class CartServiceImpl extends ServiceImpl<CartMapper, Cart> implements CartService {
-
-    @Resource
-    private Cart cart;
 
     @Resource
     private CartMapper cartMapper;
@@ -32,12 +31,27 @@ public class CartServiceImpl extends ServiceImpl<CartMapper, Cart> implements Ca
     }
 
     //删除购物车信息
-    public Boolean deleteByIdS(String uid,String cartId){
-        return cartMapper.delByIds(uid,cartId);
+    public Boolean deleteByIdS(String uid, String cartId) {
+        return cartMapper.delByIds(uid, cartId);
     }
 
     //添加购物车信息
-    public Boolean addCart(String uid,String itemId,String itemCount){
-        return cartMapper.insertByUid(uid,itemId,itemCount);
+    public Boolean setCart(String uid, String itemId, Integer itemCount) {
+        Cart cart = new Cart();
+        cart.setUid(uid);
+        cart.setItemId(itemId);
+        cart.setItemCount(itemCount);
+
+        Integer cartId = cartMapper.selectCartIdByUidAndItemId(uid, itemId);
+        if (cartId == null)
+            return cartMapper.insert(cart) == 1;
+        return cartMapper.addItemCountByCartId(cartId) == 1;
     }
+
+    @Override
+    public Boolean addCart(String uid, String itemId) {
+        return setCart(uid, itemId, 1);
+    }
+
+
 }

@@ -3,6 +3,7 @@ package cn.stanoswald.eestore.service.impl;
 import cn.stanoswald.eestore.entity.User;
 import cn.stanoswald.eestore.mapper.UserMapper;
 import cn.stanoswald.eestore.service.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
