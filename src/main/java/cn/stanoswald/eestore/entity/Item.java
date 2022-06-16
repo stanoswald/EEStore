@@ -1,11 +1,13 @@
 package cn.stanoswald.eestore.entity;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 /**
  * <p>
@@ -23,7 +25,6 @@ public class Item {
      * 商品id
      */
     @TableId(value = "item_id")
-    @JsonIgnore
     private String itemId;
 
     /**
@@ -45,20 +46,20 @@ public class Item {
     /**
      * 商品选项
      */
-    @JsonIgnore
     private String itemOption;
 
     /**
      * 库存数
      */
-    @JsonIgnore
     private Integer itemStock;
 
     /**
      * 可售
      */
-    @JsonIgnore
     private Boolean forSale;
+
+    @TableField(exist = false)
+    private List<ItemSpecific> itemSpecificList;
 
     public String getItemId() {
         return itemId;
@@ -110,16 +111,16 @@ public class Item {
         this.forSale = forSale;
     }
 
-//    @Override
-//    public String toString() {
-//        return "Item{" +
-//            "itemId=" + itemId +
-//            ", productId=" + productId +
-//            ", itemPrice=" + itemPrice +
-//            ", itemDiscount=" + itemDiscount +
-//            ", itemOption=" + itemOption +
-//            ", itemStock=" + itemStock +
-//            ", forSale=" + forSale +
-//        "}";
-//    }
+    @Override
+    public String toString() {
+        return "Item{" +
+            "itemId=" + itemId +
+            ", productId=" + productId +
+            ", itemPrice=" + itemPrice +
+            ", itemDiscount=" + itemDiscount +
+            ", itemOption=" + itemOption +
+            ", itemStock=" + itemStock +
+            ", forSale=" + forSale +
+        "}";
+    }
 }

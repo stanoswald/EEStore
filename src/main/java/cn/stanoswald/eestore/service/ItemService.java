@@ -14,7 +14,4 @@ import java.util.List;
  * @since 2022-06-15
  */
 public interface ItemService extends IService<Item> {
-    List<Item> getItemList();
-
-    Item getItemById(String itemId);
 }

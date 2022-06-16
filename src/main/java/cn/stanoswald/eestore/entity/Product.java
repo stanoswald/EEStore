@@ -1,6 +1,7 @@
 package cn.stanoswald.eestore.entity;
 
 import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -16,13 +17,13 @@ import java.util.List;
  * @since 2022-06-16
  */
 @Data
-@NoArgsConstructor
 @TableName("tbl_product")
 public class Product {
 
     /**
      * 产品id
      */
+    @TableId(value = "product_id")
     private Integer productId;
 
     /**

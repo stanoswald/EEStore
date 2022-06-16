@@ -19,18 +19,6 @@ import java.util.List;
  */
 @Service
 public class ItemServiceImpl extends ServiceImpl<ItemMapper, Item> implements ItemService {
-    @Resource
-    private ItemMapper itemMapper;
-
-    //商品列表
-    public List<Item> getItemList(){
-        return itemMapper.selectList(null);
-    }
-
-    //单个商品信息
-    public Item getItemById(String itemId){
-        return itemMapper.selectById(itemId);
-    }
 
 }
 

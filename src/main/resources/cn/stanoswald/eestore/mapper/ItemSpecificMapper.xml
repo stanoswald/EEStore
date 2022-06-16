@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.stanoswald.eestore.mapper.ItemSpecificMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="cn.stanoswald.eestore.entity.ItemSpecific">
+        <id column="item_specific_id" property="itemSpecificId" />
+        <result column="item_id" property="itemId" />
+        <result column="specific_id" property="specificId" />
+        <result column="content" property="content" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        item_specific_id, item_id, specific_id, content
+    </sql>
+
+</mapper>
