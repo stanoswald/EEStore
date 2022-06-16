@@ -47,10 +47,9 @@ public class ProductServiceImpl extends ServiceImpl<ProductMapper, Product> impl
         );
         if(itemList.size()!=0){
             Item item = itemList.get(0);
-            ProItem proItem = new ProItem(item.getItemId(), item.getProductId(), item.getItemPrice(), item.getItemDiscount());
-            List<ProItem> proItemList = new ArrayList<>();
-            proItemList.add(proItem);
-            product.setItemList(proItemList);
+            List<Item> miniItemList = new ArrayList<>();
+            miniItemList.add(item);
+            product.setItemList(miniItemList);
         }else
             product.setItemList(new ArrayList<>());
     }

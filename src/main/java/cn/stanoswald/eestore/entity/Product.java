@@ -46,7 +46,7 @@ public class Product {
     private String productImg;
 
     @TableField(exist = false)
-    private List<ProItem> itemList;
+    private List<Item> itemList;
 
     public Integer getProductId() {
         return productId;
