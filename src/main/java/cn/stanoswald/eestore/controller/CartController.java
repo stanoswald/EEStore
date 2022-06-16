@@ -20,7 +20,7 @@ import java.util.Map;
  * @since 2022-06-14
  */
 @RestController
-@RequestMapping("/user/cart")
+@RequestMapping("/user/api/cart")
 public class CartController {
 
     @Resource
