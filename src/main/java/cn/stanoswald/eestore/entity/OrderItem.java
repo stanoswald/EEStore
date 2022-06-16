@@ -6,6 +6,8 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 
+import java.math.BigDecimal;
+
 /**
  * <p>
  * 订单商品关系表
@@ -40,4 +42,9 @@ public class OrderItem {
      * 商品数量
      */
     private Integer itemCount;
+
+    /**
+     * 商品购买单价
+     */
+    private BigDecimal itemPrice;
 }

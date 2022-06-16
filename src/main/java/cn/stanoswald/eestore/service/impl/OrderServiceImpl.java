@@ -7,15 +7,18 @@ import cn.stanoswald.eestore.mapper.OrderMapper;
 import cn.stanoswald.eestore.service.OrderService;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.interceptor.TransactionAspectSupport;
 
 import javax.annotation.Resource;
-import java.util.List;
+import java.time.LocalDateTime;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
- * <p>
  * 订单表 服务实现类
- * </p>
  *
  * @author StanOswald
  * @since 2022-06-15
@@ -29,47 +32,115 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
     @Resource
     OrderItemMapper orderItemMapper;
 
+    @Transactional
     @Override
-    public String create() {
-        return null;
+    public String create(Order order) {
+        try {
+            order.setOrderId(UUID.randomUUID().toString());
+            order.setCreateTime(LocalDateTime.now());
+            orderMapper.insert(order);
+            order.getItemList().stream()
+                    .peek(orderItem -> orderItem.setOrderId(order.getOrderId()))
+                    .forEach(orderItemMapper::insert);
+
+            return order.getOrderId();
+        } catch (Exception e) {
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+            e.printStackTrace();
+            return null;
+        }
     }
 
     @Override
     public Order get(String orderId) {
-        Order order = orderMapper.selectById(orderId);
-        if (order != null) {
+        try {
+            Order order = orderMapper.selectById(orderId);
+            if (Optional.ofNullable(order).isEmpty())
+                return null;
             List<OrderItem> orderItemList = orderItemMapper.selectList(Wrappers.lambdaQuery(OrderItem.class)
-                    .select(OrderItem::getItemId, OrderItem::getItemCount)
+                    .select(OrderItem::getItemId, OrderItem::getItemCount, OrderItem::getItemPrice)
                     .eq(OrderItem::getOrderId, orderId));
             order.setItemList(orderItemList);
-        } else
-            return null;
-
-        return order;
+            return order;
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException();
+        }
     }
 
     @Override
     public List<Order> getAll(String uid) {
-        return null;
+        try {
+            List<Order> orderList = orderMapper.selectList(Wrappers.lambdaQuery(Order.class).eq(Order::getUid, uid));
+            if (orderList.size() == 0)
+                return null;
+            return addOrderItemsToOrders(orderList);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException();
+        }
     }
 
     @Override
-    public Boolean finish(String oderId) {
-        return null;
+    public Boolean finish(String orderId) {
+        try {
+            Order order = new Order();
+            order.setOrderId(orderId);
+            order.setFinishedTime(LocalDateTime.now());
+            return orderMapper.updateById(order) == 1;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     @Override
-    public Boolean modifyAddress(String oderId, String Address) {
-        return null;
+    public Boolean modifyAddress(String orderId, String address) {
+        try {
+            Order order = new Order();
+            order.setOrderId(orderId);
+            order.setAddress(address);
+            return orderMapper.updateById(order) == 1;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     @Override
     public List<Order> getToBeDelivered() {
-        return null;
+        try {
+            List<Order> orderList = orderMapper.selectList(Wrappers.lambdaQuery(Order.class).isNull(Order::getShipTime));
+            if (orderList.size() == 0)
+                return null;
+            return addOrderItemsToOrders(orderList);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException();
+        }
     }
 
     @Override
     public Boolean ship(String orderId) {
-        return null;
+        try {
+            Order order = new Order();
+            order.setOrderId(orderId);
+            order.setShipTime(LocalDateTime.now());
+            return orderMapper.updateById(order) == 1;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    @NotNull
+    private List<Order> addOrderItemsToOrders(List<Order> orderList) {
+        Set<String> orderIdSet = orderList.stream().map(Order::getOrderId).collect(Collectors.toSet());
+        List<OrderItem> orderItemList = orderItemMapper.selectList(Wrappers.lambdaQuery(OrderItem.class)
+                .select(info -> !info.getColumn().equals("item_order_id"))
+                .in(OrderItem::getOrderId, orderIdSet));
+        Map<String, List<OrderItem>> resMap = orderItemList.stream().collect(Collectors.groupingBy(OrderItem::getOrderId));
+        orderList.forEach(order -> order.setItemList(resMap.get(order.getOrderId())));
+        return orderList;
     }
 }

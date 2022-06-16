@@ -2,17 +2,23 @@ package cn.stanoswald.eestore.controller;
 
 import cn.stanoswald.eestore.entity.CommonResponse;
 import cn.stanoswald.eestore.entity.User;
+import cn.stanoswald.eestore.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
 @RestController
 @RequestMapping("/auth")
 public class AuthController {
+
+    @Resource
+    UserService userService;
 
     @GetMapping("unauthorized")
     public ResponseEntity<Object> unauthorized() {
@@ -28,9 +34,10 @@ public class AuthController {
 
     @PostMapping("login/success")
     public ResponseEntity<Object> loginSuccess(@AuthenticationPrincipal final User user) {
+        Jwt token = userService.token(user);
         return new CommonResponse.Builder()
                 .ok().message("登录成功")
-                .data("user", user).build();
+                .data("token", token.getTokenValue()).build();
     }
 
     @PostMapping("login/failure")

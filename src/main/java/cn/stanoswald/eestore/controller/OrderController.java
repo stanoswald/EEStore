@@ -3,10 +3,14 @@ package cn.stanoswald.eestore.controller;
 import cn.stanoswald.eestore.entity.CommonResponse;
 import cn.stanoswald.eestore.entity.Order;
 import cn.stanoswald.eestore.service.OrderService;
+import com.baomidou.mybatisplus.core.toolkit.StringUtils;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import java.util.List;
+import java.util.Optional;
 
 /**
  * <p>
@@ -23,22 +27,67 @@ public class OrderController {
     @Resource
     OrderService orderService;
 
-    @RequestMapping("/create")
-    @PostMapping
-    public ResponseEntity<Object> create() {
-        return null;
+    @PostMapping("create")
+    public ResponseEntity<Object> create(@RequestBody Order order) {
+        System.out.println(order);
+        String orderId = orderService.create(order);
+        return StringUtils.isNotEmpty(orderId) ?
+                new CommonResponse.Builder().ok().message("订单创建成功").data("order_id", orderId).build()
+                : new CommonResponse.Builder().error().message("订单创建失败").build();
     }
 
-    @RequestMapping("/get")
-    @GetMapping
+    @PostMapping("finish")
+    public ResponseEntity<Object> finish(@RequestParam("order_id") String orderId) {
+        return orderService.finish(orderId) ?
+                new CommonResponse.Builder().ok().message("订单收货成功").build()
+                : new CommonResponse.Builder().error().message("订单收货失败").build();
+    }
+
+    @GetMapping("get")
     public ResponseEntity<Object> get(@RequestParam("order_id") String orderId) {
-        Order order = orderService.get(orderId);
-        return new CommonResponse.Builder().ok().message("订单获取成功").data("order", order).build();
+        try {
+            Order order = orderService.get(orderId);
+            return new CommonResponse.Builder().ok().message("订单获取成功").data("order", order).build();
+        } catch (RuntimeException e) {
+            return new CommonResponse.Builder(HttpStatus.INTERNAL_SERVER_ERROR).message("订单获取失败").build();
+        }
     }
 
-    @RequestMapping("/finish")
-    @PostMapping
-    public ResponseEntity<Object> finish() {
-        return null;
+    @GetMapping("get/all")
+    public ResponseEntity<Object> getAll(@RequestParam("uid") String uid) {
+        try {
+            List<Order> orderList = orderService.getAll(uid);
+            return new CommonResponse.Builder().ok().message("用户全部订单获取成功").data("order_list", orderList).build();
+        } catch (RuntimeException e) {
+            return new CommonResponse.Builder().error().message("用户全部订单获取失败").build();
+        }
+
     }
+
+    @GetMapping("get/to_be_delivered")
+    public ResponseEntity<Object> getToBeDelivered() {
+        try {
+            List<Order> toBeDelivered = orderService.getToBeDelivered();
+            return new CommonResponse.Builder().ok().message("待发货订单获取成功").data("orders", toBeDelivered).build();
+        } catch (RuntimeException e) {
+            return new CommonResponse.Builder().error().message("待发货订单获取失败").build();
+        }
+    }
+
+    @PostMapping("modify_address")
+    public ResponseEntity<Object> modifyAddress(@RequestParam("order_id") String orderId, @RequestParam("address") String address) {
+        return orderService.modifyAddress(address, orderId) ?
+                new CommonResponse.Builder().ok().message("收货地址修改成功").build()
+                : new CommonResponse.Builder().error().message("收货地址修改失败").build();
+    }
+
+
+    @PostMapping("ship")
+    public ResponseEntity<Object> ship(@RequestParam("order_id") String orderId) {
+        return orderService.finish(orderId) ?
+                new CommonResponse.Builder().ok().message("订单发货成功").build()
+                : new CommonResponse.Builder().error().message("订单发货失败").build();
+    }
+
+
 }

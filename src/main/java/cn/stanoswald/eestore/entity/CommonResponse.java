@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import java.nio.charset.StandardCharsets;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Optional;
 
 public class CommonResponse {
 
@@ -48,7 +49,8 @@ public class CommonResponse {
         }
 
         public Builder data(String k, Object v) {
-            data = Map.of(k, v);
+            if (Optional.ofNullable(v).isPresent())
+                data = Map.of(k, v);
             return this;
         }
 

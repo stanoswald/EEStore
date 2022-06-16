@@ -17,12 +17,15 @@ public interface OrderService extends IService<Order> {
 
     /**
      * 创建订单
+     *
+     * @param order 订单实体
      * @return 订单ID
      */
-    String create();
+    String create(Order order);
 
     /**
      * 获取订单
+     *
      * @param orderId 订单Id
      * @return 订单实体
      */
@@ -30,6 +33,7 @@ public interface OrderService extends IService<Order> {
 
     /**
      * 用户获取所有订单
+     *
      * @param uid 用户ID
      * @return 用户订单列表
      */
@@ -37,18 +41,20 @@ public interface OrderService extends IService<Order> {
 
     /**
      * 确认收货
-     * @param oderId 订单Id
+     *
+     * @param orderId 订单Id
      * @return 确认是否成功
      */
-    Boolean finish(String oderId);
+    Boolean finish(String orderId);
 
     /**
      * 修改收货地址
-     * @param oderId 订单ID
-     * @param Address 待修改地址
+     *
+     * @param orderId 订单ID
+     * @param address 待修改地址
      * @return 修改地址是否成功
      */
-    Boolean modifyAddress(String oderId, String Address);
+    Boolean modifyAddress(String orderId, String address);
 
     /**
      * 管理员获取待发货订单
