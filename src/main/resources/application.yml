@@ -7,3 +7,7 @@ spring:
 logging:
   level:
     cn.stanoswald.eestore.mapper: debug
+
+jwt:
+  public: classpath:/key/app.pub
+  private: classpath:/key/app.key
