@@ -6,10 +6,7 @@ import cn.stanoswald.eestore.entity.Product;
 import cn.stanoswald.eestore.service.ProductService;
 import cn.stanoswald.eestore.service.impl.ProductServiceImpl;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import java.util.List;
@@ -40,7 +37,7 @@ public class ProductController {
         }
     }
 
-    @GetMapping("/getProductByCatId")
+    @PostMapping("/getProductByCatId")
     public ResponseEntity<Object> getProductByCatId(@RequestParam("cat_id") String cat_id){
         try {
             List<Product> list = productService.getProductListByCatId(Integer.valueOf(cat_id));
@@ -51,7 +48,7 @@ public class ProductController {
         }
     }
 
-    @GetMapping("/getItemListByProId")
+    @PostMapping("/getItemListByProId")
     public ResponseEntity<Object> getItemListByProId(@RequestParam("pro_id") String pro_id){
         try{
             List<Item> itemList = productService.getItemListByProId(pro_id);
