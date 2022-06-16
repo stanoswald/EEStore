@@ -17,9 +17,7 @@ import java.util.Map;
 import java.util.Objects;
 
 /**
- * <p>
  * 产品分类表 服务实现类
- * </p>
  *
  * @author yjw
  * @since 2022-06-15
