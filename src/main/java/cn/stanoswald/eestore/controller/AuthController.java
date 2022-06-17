@@ -11,7 +11,6 @@ import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
 
 @RestController
 @RequestMapping("/auth")
@@ -47,12 +46,10 @@ public class AuthController {
                 .data("info", exception.getMessage()).build();
     }
 
-    @GetMapping("/logout/success")
-    public ResponseEntity<Object> logoutSuccess(HttpServletRequest request) {
-        System.out.println(request);
+    @GetMapping("logout/success")
+    public ResponseEntity<Object> logoutSuccess() {
         return new CommonResponse.Builder()
                 .ok().message("注销成功")
                 .build();
     }
-
 }
