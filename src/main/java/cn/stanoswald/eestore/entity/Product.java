@@ -9,9 +9,7 @@ import lombok.NoArgsConstructor;
 import java.util.List;
 
 /**
- * <p>
  * 产品表
- * </p>
  *
  * @author yjw
  * @since 2022-06-16
@@ -48,51 +46,4 @@ public class Product {
 
     @TableField(exist = false)
     private List<Item> itemList;
-
-    public Integer getProductId() {
-        return productId;
-    }
-
-    public void setProductId(Integer productId) {
-        this.productId = productId;
-    }
-    public Integer getCatId() {
-        return catId;
-    }
-
-    public void setCatId(Integer catId) {
-        this.catId = catId;
-    }
-    public String getProductName() {
-        return productName;
-    }
-
-    public void setProductName(String productName) {
-        this.productName = productName;
-    }
-    public String getProductDetail() {
-        return productDetail;
-    }
-
-    public void setProductDetail(String productDetail) {
-        this.productDetail = productDetail;
-    }
-    public String getProductImg() {
-        return productImg;
-    }
-
-    public void setProductImg(String productImg) {
-        this.productImg = productImg;
-    }
-
-    @Override
-    public String toString() {
-        return "Product{" +
-            "productId=" + productId +
-            ", catId=" + catId +
-            ", productName=" + productName +
-            ", productDetail=" + productDetail +
-            ", productImg=" + productImg +
-        "}";
-    }
 }

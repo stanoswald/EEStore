@@ -8,9 +8,7 @@ import lombok.EqualsAndHashCode;
 import org.springframework.stereotype.Repository;
 
 /**
- * <p>
  * 购物车表
- * </p>
  *
  * @author yjw
  * @since 2022-06-14
@@ -42,42 +40,4 @@ public class Cart extends Model<Cart> {
      */
     private Integer itemCount;
 
-    public Integer getCartId() {
-        return cartId;
-    }
-
-    public void setCartId(Integer cartId) {
-        this.cartId = cartId;
-    }
-    public String getUid() {
-        return uid;
-    }
-
-    public void setUid(String uid) {
-        this.uid = uid;
-    }
-    public String getItemId() {
-        return itemId;
-    }
-
-    public void setItemId(String itemId) {
-        this.itemId = itemId;
-    }
-    public Integer getItemCount() {
-        return itemCount;
-    }
-
-    public void setItemCount(Integer itemCount) {
-        this.itemCount = itemCount;
-    }
-
-    @Override
-    public String toString() {
-        return "Cart{" +
-            "cartId=" + cartId +
-            ", uid=" + uid +
-            ", itemId=" + itemId +
-            ", itemCount=" + itemCount +
-        "}";
-    }
 }

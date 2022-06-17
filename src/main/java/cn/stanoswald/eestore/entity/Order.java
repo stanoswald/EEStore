@@ -12,9 +12,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 /**
- * <p>
  * 订单表
- * </p>
  *
  * @author StanOswald
  * @since 2022-06-15

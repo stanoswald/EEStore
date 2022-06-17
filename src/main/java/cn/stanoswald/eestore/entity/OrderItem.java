@@ -9,9 +9,7 @@ import lombok.Data;
 import java.math.BigDecimal;
 
 /**
- * <p>
  * 订单商品关系表
- * </p>
  *
  * @author StanOswald
  * @since 2022-06-15
@@ -47,4 +45,5 @@ public class OrderItem {
      * 商品购买单价
      */
     private BigDecimal itemPrice;
+
 }

@@ -4,15 +4,15 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import lombok.Data;
 
 /**
- * <p>
  * 商品详情字段关系表
- * </p>
  *
  * @author yjw
  * @since 2022-06-16
  */
+@Data
 @TableName("tbl_item_specific")
 public class ItemSpecific {
 
@@ -43,50 +43,4 @@ public class ItemSpecific {
      */
     private String content;
 
-    public Integer getItemSpecificId() {
-        return itemSpecificId;
-    }
-
-    public void setItemSpecificId(Integer itemSpecificId) {
-        this.itemSpecificId = itemSpecificId;
-    }
-    public String getItemId() {
-        return itemId;
-    }
-
-    public void setItemId(String itemId) {
-        this.itemId = itemId;
-    }
-    public Integer getSpecificId() {
-        return specificId;
-    }
-
-    public void setSpecificId(Integer specificId) {
-        this.specificId = specificId;
-    }
-    public String getContent() {
-        return content;
-    }
-
-    public void setContent(String content) {
-        this.content = content;
-    }
-
-    @Override
-    public String toString() {
-        return "ItemSpecific{" +
-            "itemSpecificId=" + itemSpecificId +
-            ", itemId=" + itemId +
-            ", specificId=" + specificId +
-            ", content=" + content +
-        "}";
-    }
-
-    public String getSpecificName() {
-        return specificName;
-    }
-
-    public void setSpecificName(String specificName) {
-        this.specificName = specificName;
-    }
 }

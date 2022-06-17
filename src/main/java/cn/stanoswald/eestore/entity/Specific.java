@@ -1,15 +1,15 @@
 package cn.stanoswald.eestore.entity;
 
 import com.baomidou.mybatisplus.annotation.TableName;
+import lombok.Data;
 
 /**
- * <p>
  * 商品详情字段表
- * </p>
  *
  * @author yjw
  * @since 2022-06-16
  */
+@Data
 @TableName("tbl_specific")
 public class Specific {
 
@@ -23,26 +23,4 @@ public class Specific {
      */
     private String specificName;
 
-    public Integer getSpecificId() {
-        return specificId;
-    }
-
-    public void setSpecificId(Integer specificId) {
-        this.specificId = specificId;
-    }
-    public String getSpecificName() {
-        return specificName;
-    }
-
-    public void setSpecificName(String specificName) {
-        this.specificName = specificName;
-    }
-
-    @Override
-    public String toString() {
-        return "Specific{" +
-            "specificId=" + specificId +
-            ", specificName=" + specificName +
-        "}";
-    }
 }
