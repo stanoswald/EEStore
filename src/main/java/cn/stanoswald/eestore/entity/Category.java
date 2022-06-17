@@ -3,6 +3,7 @@ package cn.stanoswald.eestore.entity;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import lombok.Data;
 
 /**
  * 产品分类表
@@ -10,6 +11,7 @@ import com.baomidou.mybatisplus.annotation.TableName;
  * @author yjw
  * @since 2022-06-15
  */
+@Data
 @TableName("tbl_category")
 public class Category {
 
