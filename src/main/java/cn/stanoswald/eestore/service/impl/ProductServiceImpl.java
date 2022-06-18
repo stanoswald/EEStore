@@ -39,16 +39,20 @@ public class ProductServiceImpl extends ServiceImpl<ProductMapper, Product> impl
 
     //获取所有商品列表
     public List<Product> getProductList() {
-        List<Product> productList = productMapper.selectList(Wrappers.emptyWrapper());
+        List<Product> productList = productMapper.selectList(Wrappers.lambdaQuery(Product.class)
+                .select(Product::getProductId,Product::getProductName,Product::getProductImg)
+        );
         for (Product product : productList) {
             addItemList(product);
         }
         return productList;
     }
 
+
     //获取当前分类的所有商品
     public List<Product> getProductListByCatId(Integer catId){
         List<Product> productList = productMapper.selectList(Wrappers.lambdaQuery(Product.class)
+                .select(Product::getProductId,Product::getProductName,Product::getProductImg)
                 .eq(Product::getCatId,catId)
         );
         if(productList.size()!=0){
@@ -74,6 +78,16 @@ public class ProductServiceImpl extends ServiceImpl<ProductMapper, Product> impl
         }else
             product.setItemList(new ArrayList<>());
     }
+
+
+    //获取当前商品
+    public Product getProductById(String proId){
+        Product product = productMapper.selectById(proId);
+        List<Item> itemList = getItemListByProId(proId);
+        product.setItemList(itemList);
+        return product;
+    }
+
     //当前商品的item列表
     public List<Item> getItemListByProId(String proId){
         if(productMapper.selectById(proId)!=null){

@@ -51,9 +51,9 @@ public class ProductController {
     @PostMapping("/getItemListByProId")
     public ResponseEntity<Object> getItemListByProId(@RequestParam("pro_id") String pro_id){
         try{
-            List<Item> itemList = productService.getItemListByProId(pro_id);
+            Product product = productService.getProductById(pro_id);
             return new CommonResponse.Builder().ok().message("商品子类型")
-                    .data("proItemList",itemList).build();
+                    .data("product",product).build();
         }catch (Exception e){
             return new CommonResponse.Builder().message("查询失败").error().build();
         }
