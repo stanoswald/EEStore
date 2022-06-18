@@ -3,7 +3,11 @@ package cn.stanoswald.eestore.controller;
 import cn.stanoswald.eestore.entity.Cart;
 import cn.stanoswald.eestore.entity.CommonResponse;
 import cn.stanoswald.eestore.service.impl.CartServiceImpl;
+import lombok.extern.slf4j.Slf4j;
+import lombok.extern.slf4j.XSlf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.stereotype.Controller;
 
@@ -20,27 +24,29 @@ import java.util.Map;
  * @since 2022-06-14
  */
 @RestController
+@Slf4j
 @RequestMapping("/user/api/cart")
 public class CartController {
 
     @Resource
     private CartServiceImpl cartService;
-
     //查找购物车信息
     @PostMapping("/getByUid")
-    public ResponseEntity<Object> getCartByUid(@RequestParam("uid") String uid) {
+    public ResponseEntity<Object> getCartByUid(@AuthenticationPrincipal Jwt jwt) {
+        log.info(jwt.toString());
         try {
-            List<Cart> list = cartService.findByUid(uid);
+            List<Cart> list = cartService.findByUid(jwt.getSubject());
             return new CommonResponse.Builder().ok().message("个人购物车").data("ByUidCart", list).build();
         } catch (Exception e) {
+            log.info("bug:"+e.getMessage());
             return new CommonResponse.Builder().error().build();
         }
     }
 
     //删除购物车
     @DeleteMapping("/delByIds")
-    public ResponseEntity<Object> delByIds(@RequestParam("uid") String uid, @RequestParam("cart_id") String cart_id) {
-        if (cartService.deleteByIdS(uid, cart_id)) {
+    public ResponseEntity<Object> delByIds(@AuthenticationPrincipal Jwt jwt, @RequestParam("cart_id") String cart_id) {
+        if (cartService.deleteByIdS(jwt.getSubject(), cart_id)) {
             return new CommonResponse.Builder().ok().message("删除成功").data("isTrue", true).build();
         } else {
             return new CommonResponse.Builder().error().message("删除失败").data("isTrue", false).build();
@@ -49,8 +55,8 @@ public class CartController {
 
     //添加购物车
     @PostMapping("/addCart")
-    public ResponseEntity<Object> addCart(@RequestParam Map<String, String> params) {
-        if (cartService.setCart(params.get("uid"), params.get("item_id"), Integer.valueOf(params.get("item_count")))) {
+    public ResponseEntity<Object> addCart(@AuthenticationPrincipal Jwt jwt,@RequestParam("item_id") String item_id,@RequestParam("item_count") String item_count) {
+        if (cartService.setCart(jwt.getSubject(),item_id, Integer.valueOf(item_count))) {
             return new CommonResponse.Builder().ok().message("添加成功").data("isTrue", true).build();
         } else {
             return new CommonResponse.Builder().error().message("添加失败").data("isTrue", false).build();

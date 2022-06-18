@@ -22,7 +22,7 @@ public class Cart extends Model<Cart> {
     /**
      * 购物车id
      */
-    @TableId
+    @TableId(value = "cart_id")
     private Integer cartId;
 
     /**

@@ -24,29 +24,5 @@ import java.util.List;
 @RequestMapping("/public/api/item")
 public class ItemController {
 
-    @Resource
-    private ItemServiceImpl itemService;
-
-//    @GetMapping("/getItemList")
-//    public ResponseEntity<Object> getItemList(){
-//        try{
-//            List<Item> list = itemService.getItemList();
-//            return new CommonResponse.Builder().ok().message("item列表")
-//                    .data("ItemList",list).build();
-//        }catch (Exception e){
-//            return new CommonResponse.Builder().error().build();
-//        }
-//    }
-
-//    @GetMapping("/getItemById")
-//    public ResponseEntity<Object> getItemById(@RequestParam("item_id") String item_id){
-//        try{
-//            Item item = itemService.getItemById(item_id);
-//            return new CommonResponse.Builder().ok().message("商品信息")
-//                    .data("Item",item).build();
-//        }catch (Exception e){
-//            return new CommonResponse.Builder().error().build();
-//        }
-//    }
 
 }
