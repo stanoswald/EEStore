@@ -3,14 +3,18 @@ package cn.stanoswald.eestore.controller;
 import cn.stanoswald.eestore.entity.CommonResponse;
 import cn.stanoswald.eestore.entity.User;
 import cn.stanoswald.eestore.service.UserService;
+import cn.stanoswald.eestore.service.impl.PersistentLoginServiceImpl;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
+import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import java.io.UnsupportedEncodingException;
 
 @RestController
 @RequestMapping("/auth")
@@ -18,6 +22,9 @@ public class AuthController {
 
     @Resource
     UserService userService;
+
+    @Resource
+    PersistentLoginServiceImpl persistentLoginService;
 
     @GetMapping("unauthorized")
     public ResponseEntity<Object> unauthorized() {
@@ -47,9 +54,12 @@ public class AuthController {
     }
 
     @GetMapping("logout/success")
-    public ResponseEntity<Object> logoutSuccess() {
-        return new CommonResponse.Builder()
-                .ok().message("注销成功")
-                .build();
+    public ResponseEntity<Object> logoutSuccess(@CookieValue("remember-me") String cookie) {
+        try {
+            persistentLoginService.removeUserTokensByCookie(cookie);
+        } catch (Exception e) {
+            return new CommonResponse.Builder().error().message("注销失败").build();
+        }
+        return new CommonResponse.Builder().ok().message("注销成功").build();
     }
 }
