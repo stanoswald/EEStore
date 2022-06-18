@@ -1,8 +1,12 @@
 package cn.stanoswald.eestore.service.impl;
 
+import cn.stanoswald.eestore.entity.Product;
 import cn.stanoswald.eestore.entity.User;
+import cn.stanoswald.eestore.mapper.ProductMapper;
 import cn.stanoswald.eestore.mapper.UserMapper;
 import cn.stanoswald.eestore.service.UserService;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.jwt.Jwt;
@@ -18,7 +22,7 @@ import java.util.stream.Collectors;
 
 
 @Service
-public class UserServiceImpl implements UserService {
+public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements UserService {
 
     @Resource
     private JwtEncoder encoder;
@@ -30,12 +34,13 @@ public class UserServiceImpl implements UserService {
     private UserMapper userMapper;
 
     public User findByUsername(String username) {
-        return userMapper.selectByUsername(username);
+        return userMapper.selectOne(Wrappers.lambdaQuery(User.class).eq(User::getUsername, username));
     }
 
     @Override
     public Boolean removeByUsername(String username) {
-        return userMapper.deleteByUsername(username) == 1;
+        User user = userMapper.selectOne(Wrappers.lambdaQuery(User.class).eq(User::getUsername, username));
+        return userMapper.deleteById(user) == 1;
     }
 
     @Override

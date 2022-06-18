@@ -1,5 +1,8 @@
 package cn.stanoswald.eestore.entity;
 
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
@@ -11,9 +14,11 @@ import java.util.List;
 import java.util.Objects;
 
 @Data
+@TableName("tbl_user")
 @JsonIgnoreProperties({"password", "role", "enable"})
 public class User implements UserDetails {
 
+    @TableId
     private String uid;
     private String username;
     private String password;
@@ -22,6 +27,7 @@ public class User implements UserDetails {
     private String email;
     private String avatar;
     private Boolean enable;
+    @TableField(exist = false)
     private List<GrantedAuthority> authorities;
 
     @Override
