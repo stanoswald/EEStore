@@ -1,6 +1,10 @@
 package cn.stanoswald.eestore.service.impl;
 
+import cn.stanoswald.eestore.entity.User;
 import cn.stanoswald.eestore.mapper.PersistentLoginMapper;
+import cn.stanoswald.eestore.service.UserService;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.web.authentication.rememberme.*;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -18,12 +22,27 @@ public class PersistentLoginServiceImpl implements PersistentTokenRepository {
     @Resource
     PersistentLoginMapper persistentLoginMapper;
 
+    @Resource
+    UserDetailsService userDetailsService;
+
+    @Resource
+    UserService userService;
+
     public void removeUserTokensByCookie(String rememberMeCookie) throws UnsupportedEncodingException {
         String[] tokens = decodeCookie(rememberMeCookie);
         String presentedSeries = tokens[0];
 
         PersistentRememberMeToken token = getTokenForSeries(presentedSeries);
         removeUserTokens(token.getUsername());
+    }
+
+    public Jwt getTokenByCookie(String rememberMeCookie) throws UnsupportedEncodingException {
+        String[] tokens = decodeCookie(rememberMeCookie);
+        String presentedSeries = tokens[0];
+
+        PersistentRememberMeToken token = getTokenForSeries(presentedSeries);
+        User user = (User) userDetailsService.loadUserByUsername(token.getUsername());
+        return userService.token(user);
     }
 
     @Override

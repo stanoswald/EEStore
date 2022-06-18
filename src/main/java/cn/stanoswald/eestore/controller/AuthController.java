@@ -9,12 +9,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
-import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
-import java.io.UnsupportedEncodingException;
 
 @RestController
 @RequestMapping("/auth")
@@ -61,5 +58,16 @@ public class AuthController {
             return new CommonResponse.Builder().error().message("注销失败").build();
         }
         return new CommonResponse.Builder().ok().message("注销成功").build();
+    }
+
+    @GetMapping("token")
+    public ResponseEntity<Object> token(@CookieValue("remember-me") String cookie) {
+        try {
+            Jwt token = persistentLoginService.getTokenByCookie(cookie);
+            return new CommonResponse.Builder().ok().message("更新token成功").data("token", token.getTokenValue()).build();
+        } catch (Exception e) {
+            return new CommonResponse.Builder().error().message("更新token失败").build();
+        }
+
     }
 }

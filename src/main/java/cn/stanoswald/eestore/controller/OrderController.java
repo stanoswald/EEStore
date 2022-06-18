@@ -6,16 +6,15 @@ import cn.stanoswald.eestore.service.OrderService;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import java.util.List;
-import java.util.Optional;
 
 /**
- * <p>
  * 订单表 前端控制器
- * </p>
  *
  * @author StanOswald
  * @since 2022-06-15
@@ -54,14 +53,13 @@ public class OrderController {
     }
 
     @GetMapping("get/all")
-    public ResponseEntity<Object> getAll(@RequestParam("uid") String uid) {
+    public ResponseEntity<Object> getAll(@AuthenticationPrincipal Jwt jwt) {
         try {
-            List<Order> orderList = orderService.getAll(uid);
+            List<Order> orderList = orderService.getAll(jwt.getSubject());
             return new CommonResponse.Builder().ok().message("用户全部订单获取成功").data("order_list", orderList).build();
         } catch (RuntimeException e) {
             return new CommonResponse.Builder().error().message("用户全部订单获取失败").build();
         }
-
     }
 
     @GetMapping("get/to_be_delivered")
@@ -81,13 +79,10 @@ public class OrderController {
                 : new CommonResponse.Builder().error().message("收货地址修改失败").build();
     }
 
-
     @PostMapping("ship")
     public ResponseEntity<Object> ship(@RequestParam("order_id") String orderId) {
         return orderService.finish(orderId) ?
                 new CommonResponse.Builder().ok().message("订单发货成功").build()
                 : new CommonResponse.Builder().error().message("订单发货失败").build();
     }
-
-
 }
