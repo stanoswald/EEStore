@@ -6,11 +6,11 @@ import cn.stanoswald.eestore.service.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
+import java.io.IOException;
 
 @RestController
 @RequestMapping("/user/api")
@@ -28,6 +28,17 @@ public class UserController {
                     .data("user", user).build();
         } catch (Exception e) {
             return new CommonResponse.Builder().message("用户信息查询失败").error().build();
+        }
+    }
+
+    @PostMapping("upload/img")
+    public ResponseEntity<Object> updateAvatar(@AuthenticationPrincipal Jwt jwt,
+                                               @RequestParam("img") MultipartFile file) {
+        try {
+            String imgUrl = userService.updateAvatar(jwt.getSubject(), file).toString();
+            return new CommonResponse.Builder().ok().message("用户图片更新成功").data("url", imgUrl).build();
+        } catch (IOException e) {
+            return new CommonResponse.Builder().error().message("用户图片更新失败").build();
         }
     }
 }

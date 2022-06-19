@@ -1,10 +1,10 @@
 package cn.stanoswald.eestore.service.impl;
 
-import cn.stanoswald.eestore.entity.Product;
 import cn.stanoswald.eestore.entity.User;
-import cn.stanoswald.eestore.mapper.ProductMapper;
 import cn.stanoswald.eestore.mapper.UserMapper;
 import cn.stanoswald.eestore.service.UserService;
+import cn.stanoswald.eestore.util.ImgUtil;
+import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.security.core.GrantedAuthority;
@@ -14,8 +14,11 @@ import org.springframework.security.oauth2.jwt.JwtClaimsSet;
 import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.security.oauth2.jwt.JwtEncoderParameters;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
+import java.io.IOException;
+import java.net.URL;
 import java.time.Instant;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -71,5 +74,17 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
                 .build();
 
         return this.encoder.encode(JwtEncoderParameters.from(claims));
+    }
+
+    @Override
+    public URL updateAvatar(String uid, MultipartFile file) throws IOException {
+        URL url = ImgUtil.saveUserImage(uid, file);
+        if (StringUtils.isNotEmpty(url.toString())) {
+            User user = new User();
+            user.setUid(uid);
+            user.setAvatar(url.toString());
+            userMapper.updateById(user);
+        }
+        return url;
     }
 }
