@@ -6,11 +6,19 @@ import cn.stanoswald.eestore.mapper.ItemSpecificMapper;
 import cn.stanoswald.eestore.mapper.ProductMapper;
 import cn.stanoswald.eestore.mapper.SpecificMapper;
 import cn.stanoswald.eestore.service.ProductService;
+import cn.stanoswald.eestore.util.ImgUtil;
+import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.interceptor.TransactionAspectSupport;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
+import java.io.IOException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,6 +29,7 @@ import java.util.List;
  * @since 2022-06-16
  */
 @Service
+@Slf4j
 public class ProductServiceImpl extends ServiceImpl<ProductMapper, Product> implements ProductService {
 
     @Resource
@@ -38,7 +47,7 @@ public class ProductServiceImpl extends ServiceImpl<ProductMapper, Product> impl
     //获取所有商品列表
     public List<Product> getProductList() {
         List<Product> productList = productMapper.selectList(Wrappers.lambdaQuery(Product.class)
-                .select(Product::getProductId,Product::getProductName,Product::getProductImg)
+                .select(Product::getProductId, Product::getProductName, Product::getProductImg)
         );
         for (Product product : productList) {
             addItemList(product);
@@ -48,12 +57,12 @@ public class ProductServiceImpl extends ServiceImpl<ProductMapper, Product> impl
 
 
     //获取当前分类的所有商品
-    public List<Product> getProductListByCatId(Integer catId){
+    public List<Product> getProductListByCatId(Integer catId) {
         List<Product> productList = productMapper.selectList(Wrappers.lambdaQuery(Product.class)
-                .select(Product::getProductId,Product::getProductName,Product::getProductImg)
-                .eq(Product::getCatId,catId)
+                .select(Product::getProductId, Product::getProductName, Product::getProductImg)
+                .eq(Product::getCatId, catId)
         );
-        if(productList.size()!=0){
+        if (productList.size() != 0) {
             for (Product product : productList) {
                 addItemList(product);
             }
@@ -68,18 +77,18 @@ public class ProductServiceImpl extends ServiceImpl<ProductMapper, Product> impl
                 .eq(Item::getProductId, product.getProductId())
                 .orderByAsc(Item::getItemPrice)
         );
-        if(itemList.size()!=0){
+        if (itemList.size() != 0) {
             Item item = itemList.get(0);
             List<Item> miniItemList = new ArrayList<>();
             miniItemList.add(item);
             product.setItemList(miniItemList);
-        }else
+        } else
             product.setItemList(new ArrayList<>());
     }
 
 
-    //获取当前商品
-    public Product getProductById(String proId){
+    //获取当前商品详情
+    public Product getProductById(String proId) {
         Product product = productMapper.selectById(proId);
         List<Item> itemList = getItemListByProId(proId);
         product.setItemList(itemList);
@@ -87,40 +96,81 @@ public class ProductServiceImpl extends ServiceImpl<ProductMapper, Product> impl
     }
 
     //当前商品的item列表
-    public List<Item> getItemListByProId(String proId){
-        if(productMapper.selectById(proId)!=null){
+    public List<Item> getItemListByProId(String proId) {
+        if (productMapper.selectById(proId) != null) {
             List<Item> itemList = itemMapper.selectList(Wrappers.lambdaQuery(Item.class)
-                    .eq(Item::getProductId,proId)
+                    .eq(Item::getProductId, proId)
             );
-            for (Item item : itemList){
+            for (Item item : itemList) {
                 addItemSpecific(item);
             }
             return itemList;
-        }else return null;
+        } else return null;
     }
 
     //添加当前item的specific信息
-    private void addItemSpecific(Item item){
+    private void addItemSpecific(Item item) {
         List<ItemSpecific> itemSpecificList = itemSpecificMapper.selectList(Wrappers.lambdaQuery(ItemSpecific.class)
-                .select(ItemSpecific::getSpecificId,ItemSpecific::getContent)
-                .eq(ItemSpecific::getItemId,item.getItemId())
+                .select(ItemSpecific::getSpecificId, ItemSpecific::getContent)
+                .eq(ItemSpecific::getItemId, item.getItemId())
         );
-        if(itemSpecificList.size()!=0) {
-            for (ItemSpecific itemSpecific : itemSpecificList){
+        if (itemSpecificList.size() != 0) {
+            for (ItemSpecific itemSpecific : itemSpecificList) {
                 addSpecific(itemSpecific);
             }
             item.setItemSpecificList(itemSpecificList);
-        }else item.setItemSpecificList(new ArrayList<>());
+        } else item.setItemSpecificList(new ArrayList<>());
     }
 
     //添加specific名称
-    private void addSpecific(ItemSpecific itemSpecific){
+    private void addSpecific(ItemSpecific itemSpecific) {
         List<Specific> specificList = specificMapper.selectList(Wrappers.lambdaQuery(Specific.class)
                 .select(Specific::getSpecificName)
-                .eq(Specific::getSpecificId,itemSpecific.getSpecificId())
+                .eq(Specific::getSpecificId, itemSpecific.getSpecificId())
         );
-        if(specificList.size()!=0){
+        if (specificList.size() != 0) {
             itemSpecific.setSpecificName(specificList.get(0).getSpecificName());
+        }
+    }
+
+    @Transactional
+    @Override
+    public Integer addProduct(Product product, MultipartFile productImg) {
+        try {
+            log.info(product.toString());
+            addProductImg(product, productImg);
+            productMapper.insert(product);
+            List<Item> itemList = product.getItemList();
+            for (Item item : itemList) {
+                item.setProductId(product.getProductId());
+                itemMapper.insert(item);
+                List<ItemSpecific> itemSpecificList = item.getItemSpecificList();
+                for (ItemSpecific itemSpecific : itemSpecificList) {
+                    itemSpecific.setItemId(item.getItemId());
+                    itemSpecificMapper.insert(itemSpecific);
+                    if (specificMapper.selectList(Wrappers.lambdaQuery(Specific.class)
+                            .eq(Specific::getSpecificName, itemSpecific.getSpecificName())
+                    ).isEmpty()) {
+                        Specific specific = new Specific();
+                        specific.setSpecificName(itemSpecific.getSpecificName());
+                        specificMapper.insert(specific);
+                    }
+                }
+            }
+            if (productMapper.selectById(product.getProductId()) != null) {
+                return product.getProductId();
+            } else return null;
+        } catch (Exception e) {
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public void addProductImg(Product product, MultipartFile file) throws IOException {
+        URL url = ImgUtil.saveProductImage(product.getProductName(), file);
+        if (StringUtils.isNotEmpty(url.toString())) {
+            product.setProductImg(url.toString());
         }
     }
 }
