@@ -28,7 +28,6 @@ public class OrderController {
 
     @PostMapping("create")
     public ResponseEntity<Object> create(@RequestBody Order order) {
-        System.out.println(order);
         String orderId = orderService.create(order);
         return StringUtils.isNotEmpty(orderId) ?
                 new CommonResponse.Builder().ok().message("订单创建成功").data("order_id", orderId).build()
@@ -81,7 +80,7 @@ public class OrderController {
 
     @PostMapping("ship")
     public ResponseEntity<Object> ship(@RequestParam("order_id") String orderId) {
-        return orderService.finish(orderId) ?
+        return orderService.ship(orderId) ?
                 new CommonResponse.Builder().ok().message("订单发货成功").build()
                 : new CommonResponse.Builder().error().message("订单发货失败").build();
     }

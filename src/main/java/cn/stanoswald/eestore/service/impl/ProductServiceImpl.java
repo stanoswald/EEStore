@@ -15,9 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * <p>
  * 产品表 服务实现类
- * </p>
  *
  * @author yjw
  * @since 2022-06-16

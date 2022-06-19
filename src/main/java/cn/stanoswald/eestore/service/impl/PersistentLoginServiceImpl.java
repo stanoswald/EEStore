@@ -28,6 +28,11 @@ public class PersistentLoginServiceImpl implements PersistentTokenRepository {
     @Resource
     UserService userService;
 
+    /**
+     * 注销时根据remember-me cookie删除用户自动登录信息
+     * @param rememberMeCookie remember-me cookie字段
+     * @throws UnsupportedEncodingException cookie字段错误
+     */
     public void removeUserTokensByCookie(String rememberMeCookie) throws UnsupportedEncodingException {
         String[] tokens = decodeCookie(rememberMeCookie);
         String presentedSeries = tokens[0];
@@ -36,6 +41,12 @@ public class PersistentLoginServiceImpl implements PersistentTokenRepository {
         removeUserTokens(token.getUsername());
     }
 
+    /**
+     * 根据remember-me 刷新用户token
+     * @param rememberMeCookie remember-me cookie字段
+     * @return token对象
+     * @throws UnsupportedEncodingException cookie字段错误
+     */
     public Jwt getTokenByCookie(String rememberMeCookie) throws UnsupportedEncodingException {
         String[] tokens = decodeCookie(rememberMeCookie);
         String presentedSeries = tokens[0];
@@ -67,6 +78,11 @@ public class PersistentLoginServiceImpl implements PersistentTokenRepository {
         persistentLoginMapper.deleteTokenByUsername(username);
     }
 
+    /**
+     * 解析remember-me cookie字段
+     * @param cookieValue remember-me cookie字段
+     * @return 解析后的字段数组
+     */
     protected String[] decodeCookie(String cookieValue) throws InvalidCookieException, UnsupportedEncodingException {
         for (int j = 0; j < cookieValue.length() % 4; ++j) {
             cookieValue = cookieValue + "=";

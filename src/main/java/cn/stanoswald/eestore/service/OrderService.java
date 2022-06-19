@@ -6,9 +6,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import java.util.List;
 
 /**
- * <p>
  * 订单表 服务类
- * </p>
  *
  * @author StanOswald
  * @since 2022-06-15

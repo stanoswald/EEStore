@@ -10,9 +10,7 @@ import javax.annotation.Resource;
 import java.util.List;
 
 /**
- * <p>
  * 商品表 服务实现类
- * </p>
  *
  * @author yjw
  * @since 2022-06-15

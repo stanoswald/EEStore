@@ -11,11 +11,33 @@ import java.net.URL;
 public interface UserService extends IService<User> {
     User findByUsername(String username);
 
+    /**
+     * 根据用户名删除用户
+     * @param username 用户名
+     * @return 是否删除成功
+     */
     Boolean removeByUsername(String username);
 
+    /**
+     * 用户注册
+     * @param user 用户实体
+     * @return 用户id
+     */
     String register(User user);
 
+    /**
+     * 根据用户获取token
+     * @param user 用户实体
+     * @return token对象
+     */
     Jwt token(User user);
 
+    /**
+     * 用户头像更新
+     * @param uid 用户id
+     * @param file 图片文件
+     * @return 图片地址
+     * @throws IOException 图片保存失败
+     */
     URL updateAvatar(String uid, MultipartFile file) throws IOException;
 }
