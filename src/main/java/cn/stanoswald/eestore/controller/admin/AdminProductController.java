@@ -31,7 +31,7 @@ public class AdminProductController {
     @Resource
     private ProductService productService;
 
-    @PostMapping("/addProduct")
+    @PostMapping("/add")
     public ResponseEntity<Object> addProduct(@RequestParam("product") String productJsonStr, @RequestParam("img") MultipartFile img) {
         try {
             ObjectMapper mapper = new ObjectMapper().setPropertyNamingStrategy(new PropertyNamingStrategies.SnakeCaseStrategy());

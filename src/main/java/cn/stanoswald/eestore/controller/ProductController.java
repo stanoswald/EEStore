@@ -26,30 +26,30 @@ public class ProductController {
     @Resource
     private ProductServiceImpl productService;
 
-    @GetMapping("/getProductList")
+    @GetMapping("/get/list")
     public ResponseEntity<Object> getProductList(){
         try{
             List<Product> list = productService.getProductList();
-            return new CommonResponse.Builder().ok().message("商品列表")
-                    .data("productList",list).build();
+            return new CommonResponse.Builder().ok().message("产品列表")
+                    .data("product_list",list).build();
         }catch (Exception e){
             return new CommonResponse.Builder().message("查询失败").error().build();
         }
     }
 
-    @PostMapping("/getProductByCatId")
+    @PostMapping("/get")
     public ResponseEntity<Object> getProductByCatId(@RequestParam("cat_id") String cat_id){
         try {
             List<Product> list = productService.getProductListByCatId(Integer.valueOf(cat_id));
-            return new CommonResponse.Builder().ok().message("当前分类商品")
+            return new CommonResponse.Builder().ok().message("当前分类产品")
                     .data("productCategory",list).build();
         }catch (Exception e){
             return new CommonResponse.Builder().message("查询失败").error().build();
         }
     }
 
-    @PostMapping("/getItemListByProId")
-    public ResponseEntity<Object> getItemListByProId(@RequestParam("pro_id") String pro_id){
+    @PostMapping("/get")
+    public ResponseEntity<Object> getItemListByProId(@RequestParam("product_id") String pro_id){
         try{
             Product product = productService.getProductById(pro_id);
             return new CommonResponse.Builder().ok().message("商品子类型")

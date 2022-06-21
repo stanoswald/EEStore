@@ -31,7 +31,7 @@ public class CartController {
     @Resource
     private CartServiceImpl cartService;
     //查找购物车信息
-    @PostMapping("/getByUid")
+    @PostMapping("/get")
     public ResponseEntity<Object> getCartByUid(@AuthenticationPrincipal Jwt jwt) {
         log.info(jwt.toString());
         try {
@@ -44,7 +44,7 @@ public class CartController {
     }
 
     //删除购物车
-    @DeleteMapping("/delByIds")
+    @DeleteMapping("/delete")
     public ResponseEntity<Object> delByIds(@AuthenticationPrincipal Jwt jwt, @RequestParam("cart_id") String cart_id) {
         if (cartService.deleteByIdS(jwt.getSubject(), cart_id)) {
             return new CommonResponse.Builder().ok().message("删除成功").data("isTrue", true).build();
@@ -54,7 +54,7 @@ public class CartController {
     }
 
     //添加购物车
-    @PostMapping("/addCart")
+    @PostMapping("/add")
     public ResponseEntity<Object> addCart(@AuthenticationPrincipal Jwt jwt,@RequestParam("item_id") String item_id,@RequestParam("item_count") String item_count) {
         if (cartService.setCart(jwt.getSubject(),item_id, Integer.valueOf(item_count))) {
             return new CommonResponse.Builder().ok().message("添加成功").data("isTrue", true).build();

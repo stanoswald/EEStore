@@ -12,7 +12,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @SpringBootApplication
 @MapperScan("cn.stanoswald.eestore.mapper")
-public class EeStoreApplication implements WebMvcConfigurer {
+public class EEStoreApplication implements WebMvcConfigurer {
 
     private static final String[] RESOURCE_HANDLER_PATTERNS =
             {"/img/user/**", "/img/product/**"};
@@ -20,7 +20,7 @@ public class EeStoreApplication implements WebMvcConfigurer {
             {"file:img/user/", "file:img/product/"};
 
     public static void main(String[] args) {
-        SpringApplication.run(EeStoreApplication.class, args);
+        SpringApplication.run(EEStoreApplication.class, args);
     }
 
     @Bean

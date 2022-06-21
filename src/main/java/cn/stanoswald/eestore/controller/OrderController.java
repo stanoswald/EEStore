@@ -27,7 +27,8 @@ public class OrderController {
     OrderService orderService;
 
     @PostMapping("create")
-    public ResponseEntity<Object> create(@RequestBody Order order) {
+    public ResponseEntity<Object> create(@AuthenticationPrincipal Jwt jwt, @RequestBody Order order) {
+        order.setUid(jwt.getSubject());
         String orderId = orderService.create(order);
         return StringUtils.isNotEmpty(orderId) ?
                 new CommonResponse.Builder().ok().message("订单创建成功").data("order_id", orderId).build()

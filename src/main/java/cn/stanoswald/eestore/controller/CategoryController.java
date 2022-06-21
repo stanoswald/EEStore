@@ -27,7 +27,7 @@ public class CategoryController {
     private CategoryServiceImpl categoryService;
 
     //获取分类列表
-    @GetMapping("/getAll")
+    @GetMapping("/get/all")
     public ResponseEntity<Object> getAll(){
         try{
             List<Category> list = categoryService.getAllCategory();
@@ -38,7 +38,7 @@ public class CategoryController {
     }
 
     //添加分类
-    @PostMapping("/addCategory")
+    @PostMapping("/add")
     public ResponseEntity<Object> addCategory(@RequestParam("cat_name") String cat_name){
         if(categoryService.addCategory(cat_name)){
             return new CommonResponse.Builder().ok().message("添加成功").data("isTrue", true).build();
@@ -48,7 +48,7 @@ public class CategoryController {
     }
 
     //删除分类
-    @PostMapping("/delCategory")
+    @PostMapping("/delete")
     public ResponseEntity<Object> delCategory(@RequestParam("cat_name") String cat_name){
         if(categoryService.delCategory(cat_name)){
             return new CommonResponse.Builder().ok().message("删除成功").data("isTrue", true).build();
