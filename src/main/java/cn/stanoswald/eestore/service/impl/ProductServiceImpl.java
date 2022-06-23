@@ -162,8 +162,8 @@ public class ProductServiceImpl extends ServiceImpl<ProductMapper, Product> impl
             } else return null;
         } catch (Exception e) {
             TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
-            e.printStackTrace();
-            return null;
+            log.error(e.getMessage());
+            throw new RuntimeException();
         }
     }
 

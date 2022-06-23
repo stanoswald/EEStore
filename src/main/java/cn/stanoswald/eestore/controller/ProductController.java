@@ -37,7 +37,7 @@ public class ProductController {
         }
     }
 
-    @PostMapping("/get")
+    @PostMapping("/get/cat")
     public ResponseEntity<Object> getProductByCatId(@RequestParam("cat_id") String cat_id){
         try {
             List<Product> list = productService.getProductListByCatId(Integer.valueOf(cat_id));
@@ -48,7 +48,7 @@ public class ProductController {
         }
     }
 
-    @PostMapping("/get")
+    @PostMapping("/get/product")
     public ResponseEntity<Object> getItemListByProId(@RequestParam("product_id") String pro_id){
         try{
             Product product = productService.getProductById(pro_id);

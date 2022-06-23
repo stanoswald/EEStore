@@ -1,8 +1,13 @@
 package cn.stanoswald.eestore.service.impl;
 
 import cn.stanoswald.eestore.entity.Cart;
+import cn.stanoswald.eestore.entity.Item;
+import cn.stanoswald.eestore.entity.Product;
 import cn.stanoswald.eestore.mapper.CartMapper;
+import cn.stanoswald.eestore.mapper.ItemMapper;
+import cn.stanoswald.eestore.mapper.ProductMapper;
 import cn.stanoswald.eestore.service.CartService;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
 
@@ -22,9 +27,26 @@ public class CartServiceImpl extends ServiceImpl<CartMapper, Cart> implements Ca
     @Resource
     private CartMapper cartMapper;
 
+    @Resource
+    private ItemMapper itemMapper;
+
+    @Resource
+    private ProductMapper productMapper;
+
+
     //查询购物车信息
     public List<Cart> findByUid(String uid) {
-        return cartMapper.getByUid(uid);
+        List<Cart> cartList = cartMapper.getByUid(uid);
+        for (Cart cart : cartList){
+            Item item=itemMapper.selectById(cart.getItemId());
+            cart.setItemPrice(item.getItemPrice());
+            cart.setItemDiscount(item.getItemDiscount());
+            cart.setProductId(item.getProductId());
+            Product product = productMapper.selectById(item.getProductId());
+            cart.setProductName(product.getProductName());
+            cart.setProductImg(product.getProductImg());
+        }
+        return cartList;
     }
 
     //删除购物车信息
