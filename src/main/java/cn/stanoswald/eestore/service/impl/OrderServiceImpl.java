@@ -1,7 +1,9 @@
 package cn.stanoswald.eestore.service.impl;
 
+import cn.stanoswald.eestore.entity.Item;
 import cn.stanoswald.eestore.entity.Order;
 import cn.stanoswald.eestore.entity.OrderItem;
+import cn.stanoswald.eestore.mapper.ItemMapper;
 import cn.stanoswald.eestore.mapper.OrderItemMapper;
 import cn.stanoswald.eestore.mapper.OrderMapper;
 import cn.stanoswald.eestore.service.OrderService;
@@ -32,6 +34,9 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
     @Resource
     OrderItemMapper orderItemMapper;
 
+    @Resource
+    ItemMapper itemMapper;
+
     @Transactional
     @Override
     public String create(Order order) {
@@ -42,7 +47,9 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
             order.getItemList().stream()
                     .peek(orderItem -> orderItem.setOrderId(order.getOrderId()))
                     .forEach(orderItemMapper::insert);
-
+            for (OrderItem orderItem : order.getItemList()){
+                reduceItem(orderItem.getItemId(),orderItem.getItemCount());
+            }
             return order.getOrderId();
         } catch (Exception e) {
             TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
@@ -142,5 +149,17 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
         Map<String, List<OrderItem>> resMap = orderItemList.stream().collect(Collectors.groupingBy(OrderItem::getOrderId));
         orderList.forEach(order -> order.setItemList(resMap.get(order.getOrderId())));
         return orderList;
+    }
+
+    private Boolean reduceItem(String itemId,Integer item_count){
+        Item item = new Item();
+        item.setItemId(itemId);
+        Integer itemStock = itemMapper.selectById(itemId).getItemStock();
+        if(itemStock >= item_count) {
+            item.setItemStock((itemStock - item_count));
+        }else {
+            return false;
+        }
+        return itemMapper.updateById(item) == 1;
     }
 }

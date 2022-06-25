@@ -3,10 +3,6 @@ package cn.stanoswald.eestore.controller.admin;
 import cn.stanoswald.eestore.entity.CommonResponse;
 import cn.stanoswald.eestore.entity.Product;
 import cn.stanoswald.eestore.service.ProductService;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.PropertyNamingStrategies;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -31,10 +27,20 @@ public class AdminProductController {
     @PostMapping("/add")
     public ResponseEntity<Object> addProduct(@RequestPart("product") Product product, @RequestPart("img") MultipartFile img) {
         try {
-            Integer productId = productService.addProduct(product, img);
-            return new CommonResponse.Builder().ok().message("商品添加成功").data("product_id", productId).build();
+            Integer productId = productService.addProduct(product,img);
+            return new CommonResponse.Builder().ok().message("产品添加成功").data("product_id", productId).build();
         } catch (RuntimeException e) {
-            return new CommonResponse.Builder().error().message("商品添加失败").build();
+            return new CommonResponse.Builder().error().message("产品添加失败").build();
+        }
+    }
+
+    @PostMapping("/delete")
+    public ResponseEntity<Object> delProduct(@RequestParam("product_id") String product_id){
+        try {
+            Boolean isDelete = productService.deleteProduct(Integer.valueOf(product_id));
+            return new CommonResponse.Builder().ok().message("产品删除成功").data("isDelete",isDelete).build();
+        }catch (Exception e){
+            return new CommonResponse.Builder().error().message("产品删除失败").build();
         }
     }
 }

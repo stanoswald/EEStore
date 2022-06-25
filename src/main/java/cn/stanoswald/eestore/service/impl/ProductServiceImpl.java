@@ -15,7 +15,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
 import org.springframework.web.multipart.MultipartFile;
-
 import javax.annotation.Resource;
 import java.io.IOException;
 import java.net.URL;
@@ -45,6 +44,7 @@ public class ProductServiceImpl extends ServiceImpl<ProductMapper, Product> impl
     private SpecificMapper specificMapper;
 
     //获取所有商品列表
+    @Override
     public List<Product> getProductList() {
         List<Product> productList = productMapper.selectList(Wrappers.lambdaQuery(Product.class)
                 .select(Product::getProductId, Product::getProductName, Product::getProductImg)
@@ -55,8 +55,21 @@ public class ProductServiceImpl extends ServiceImpl<ProductMapper, Product> impl
         return productList;
     }
 
+    @Override
+    public List<Product> getAllProduct(){
+        List<Product> productList = productMapper.selectList(Wrappers.emptyWrapper());
+        for (Product product : productList){
+            List<Item> itemList = itemMapper.selectList(Wrappers.lambdaQuery(Item.class)
+                    .eq(Item::getProductId,product.getProductId())
+                    .select(Item::getItemId,Item::getItemOption)
+            );
+            product.setItemList(itemList);
+        }
+        return productList;
+    }
 
     //获取当前分类的所有商品
+    @Override
     public List<Product> getProductListByCatId(Integer catId) {
         List<Product> productList = productMapper.selectList(Wrappers.lambdaQuery(Product.class)
                 .select(Product::getProductId, Product::getProductName, Product::getProductImg)
@@ -86,8 +99,8 @@ public class ProductServiceImpl extends ServiceImpl<ProductMapper, Product> impl
             product.setItemList(new ArrayList<>());
     }
 
-
     //获取当前商品详情
+    @Override
     public Product getProductById(String proId) {
         Product product = productMapper.selectById(proId);
         List<Item> itemList = getItemListByProId(proId);
@@ -141,19 +154,23 @@ public class ProductServiceImpl extends ServiceImpl<ProductMapper, Product> impl
             addProductImg(product, productImg);
             productMapper.insert(product);
             List<Item> itemList = product.getItemList();
-            for (Item item : itemList) {
-                item.setProductId(product.getProductId());
-                itemMapper.insert(item);
-                List<ItemSpecific> itemSpecificList = item.getItemSpecificList();
-                for (ItemSpecific itemSpecific : itemSpecificList) {
-                    itemSpecific.setItemId(item.getItemId());
-                    itemSpecificMapper.insert(itemSpecific);
-                    if (specificMapper.selectList(Wrappers.lambdaQuery(Specific.class)
-                            .eq(Specific::getSpecificName, itemSpecific.getSpecificName())
-                    ).isEmpty()) {
-                        Specific specific = new Specific();
-                        specific.setSpecificName(itemSpecific.getSpecificName());
-                        specificMapper.insert(specific);
+            if(itemList!=null){
+                for (Item item : itemList) {
+                    item.setProductId(product.getProductId());
+                    itemMapper.insert(item);
+                    List<ItemSpecific> itemSpecificList = item.getItemSpecificList();
+                    if(itemSpecificList!=null){
+                        for (ItemSpecific itemSpecific : itemSpecificList) {
+                            itemSpecific.setItemId(item.getItemId());
+                            itemSpecificMapper.insert(itemSpecific);
+                            if (specificMapper.selectList(Wrappers.lambdaQuery(Specific.class)
+                                    .eq(Specific::getSpecificName, itemSpecific.getSpecificName())
+                            ).isEmpty()) {
+                                Specific specific = new Specific();
+                                specific.setSpecificName(itemSpecific.getSpecificName());
+                                specificMapper.insert(specific);
+                            }
+                        }
                     }
                 }
             }
@@ -171,6 +188,33 @@ public class ProductServiceImpl extends ServiceImpl<ProductMapper, Product> impl
         URL url = ImgUtil.saveProductImage(product.getProductName(), file);
         if (StringUtils.isNotEmpty(url.toString())) {
             product.setProductImg(url.toString());
+        }
+    }
+
+    @Transactional
+    @Override
+    public Boolean deleteProduct(Integer product_id){
+        try {
+            List<Item> itemList = itemMapper.selectList(Wrappers.lambdaQuery(Item.class)
+                    .eq(Item::getProductId, product_id)
+            );
+            if (itemList != null) {
+                for (Item item : itemList) {
+                    List<ItemSpecific> itemSpecificList = itemSpecificMapper.selectList(Wrappers.lambdaQuery(ItemSpecific.class)
+                            .eq(ItemSpecific::getItemId, item.getItemId())
+                    );
+                    if (itemSpecificList != null) {
+                        for (ItemSpecific itemSpecific : itemSpecificList) {
+                            itemSpecificMapper.deleteById(itemSpecific);
+                        }
+                    }
+                    itemMapper.deleteById(item);
+                }
+            }
+            return productMapper.deleteById(product_id) == 1;
+        }catch (Exception e){
+
+            return false;
         }
     }
 }

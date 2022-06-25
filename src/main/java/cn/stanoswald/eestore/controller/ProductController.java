@@ -24,7 +24,7 @@ import java.util.Map;
 @RequestMapping("/public/api/product")
 public class ProductController {
     @Resource
-    private ProductServiceImpl productService;
+    private ProductService productService;
 
     @GetMapping("/get/list")
     public ResponseEntity<Object> getProductList(){
@@ -56,6 +56,16 @@ public class ProductController {
                     .data("product",product).build();
         }catch (Exception e){
             return new CommonResponse.Builder().message("查询失败").error().build();
+        }
+    }
+
+    @GetMapping("/get/all")
+    public ResponseEntity<Object> getAllProduct(){
+        try {
+            List<Product> productList = productService.getAllProduct();
+            return new CommonResponse.Builder().ok().message("产品列表").data("productList",productList).build();
+        }catch (Exception e){
+            return new CommonResponse.Builder().error().message("查询失败").build();
         }
     }
 }

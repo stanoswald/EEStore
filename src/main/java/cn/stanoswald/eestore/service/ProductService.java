@@ -19,6 +19,8 @@ public interface ProductService extends IService<Product> {
 
     List<Item> getItemListByProId(String proId);
 
+    List<Product> getAllProduct();
+
     List<Product> getProductListByCatId(Integer catId);
 
     /**
@@ -28,4 +30,8 @@ public interface ProductService extends IService<Product> {
      * @return 产品id
      */
     Integer addProduct(Product product, MultipartFile productImg);
+
+    Product getProductById(String pro_id);
+
+    Boolean deleteProduct(Integer product_id);
 }
