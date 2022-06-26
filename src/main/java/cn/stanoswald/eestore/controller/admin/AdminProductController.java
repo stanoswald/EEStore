@@ -1,6 +1,5 @@
 package cn.stanoswald.eestore.controller.admin;
 
-import cn.stanoswald.eestore.controller.AdminController;
 import cn.stanoswald.eestore.entity.CommonResponse;
 import cn.stanoswald.eestore.entity.Product;
 import cn.stanoswald.eestore.service.ProductService;
@@ -19,8 +18,8 @@ import javax.annotation.Resource;
  * @since 2022-06-16
  */
 @RestController
-@RequestMapping("product")
-public class AdminProductController extends AdminController {
+@RequestMapping("/admin/api/product")
+public class AdminProductController {
 
     @Resource
     private ProductService productService;
@@ -28,7 +27,7 @@ public class AdminProductController extends AdminController {
     @PostMapping("/add")
     public ResponseEntity<Object> addProduct(@RequestPart("product") Product product, @RequestPart("img") MultipartFile img) {
         try {
-            Integer productId = productService.addProduct(product,img);
+            Integer productId = productService.addProduct(product, img);
             return new CommonResponse.Builder().ok().message("产品添加成功").data("product_id", productId).build();
         } catch (RuntimeException e) {
             return new CommonResponse.Builder().error().message("产品添加失败").build();
@@ -36,11 +35,11 @@ public class AdminProductController extends AdminController {
     }
 
     @PostMapping("/delete")
-    public ResponseEntity<Object> delProduct(@RequestParam("product_id") String product_id){
+    public ResponseEntity<Object> delProduct(@RequestParam("product_id") String product_id) {
         try {
             Boolean isDelete = productService.deleteProduct(Integer.valueOf(product_id));
-            return new CommonResponse.Builder().ok().message("产品删除成功").data("isDelete",isDelete).build();
-        }catch (Exception e){
+            return new CommonResponse.Builder().ok().message("产品删除成功").data("isDelete", isDelete).build();
+        } catch (Exception e) {
             return new CommonResponse.Builder().error().message("产品删除失败").build();
         }
     }

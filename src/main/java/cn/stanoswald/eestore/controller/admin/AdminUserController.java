@@ -1,6 +1,5 @@
 package cn.stanoswald.eestore.controller.admin;
 
-import cn.stanoswald.eestore.controller.AdminController;
 import cn.stanoswald.eestore.entity.CommonResponse;
 import cn.stanoswald.eestore.entity.User;
 import cn.stanoswald.eestore.service.UserService;
@@ -10,8 +9,8 @@ import org.springframework.web.bind.annotation.*;
 import javax.annotation.Resource;
 
 @RestController
-@RequestMapping("user/")
-public class AdminUserController extends AdminController {
+@RequestMapping("/admin/api/user/")
+public class AdminUserController {
 
     @Resource
     UserService userService;
