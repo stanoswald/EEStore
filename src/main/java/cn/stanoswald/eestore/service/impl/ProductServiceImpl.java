@@ -150,8 +150,13 @@ public class ProductServiceImpl extends ServiceImpl<ProductMapper, Product> impl
     @Override
     public Integer addProduct(Product product, MultipartFile productImg) {
         try {
-            log.info(product.toString());
-            addProductImg(product, productImg);
+//            log.info(product.toString());
+            if(productMapper.selectCount(Wrappers.lambdaQuery(Product.class).eq(Product::getProductName,product.getProductName()))!=0){
+                return null;
+            }
+            if(productImg!=null) {
+                addProductImg(product, productImg);
+            }
             productMapper.insert(product);
             List<Item> itemList = product.getItemList();
             if(itemList!=null){
@@ -162,7 +167,6 @@ public class ProductServiceImpl extends ServiceImpl<ProductMapper, Product> impl
                     if(itemSpecificList!=null){
                         for (ItemSpecific itemSpecific : itemSpecificList) {
                             itemSpecific.setItemId(item.getItemId());
-                            itemSpecificMapper.insert(itemSpecific);
                             if (specificMapper.selectList(Wrappers.lambdaQuery(Specific.class)
                                     .eq(Specific::getSpecificName, itemSpecific.getSpecificName())
                             ).isEmpty()) {
@@ -170,6 +174,11 @@ public class ProductServiceImpl extends ServiceImpl<ProductMapper, Product> impl
                                 specific.setSpecificName(itemSpecific.getSpecificName());
                                 specificMapper.insert(specific);
                             }
+                            Specific specific =specificMapper.selectOne(Wrappers.lambdaQuery(Specific.class)
+                                    .eq(Specific::getSpecificName,itemSpecific.getSpecificName())
+                            );
+                            itemSpecific.setSpecificId(specific.getSpecificId());
+                            itemSpecificMapper.insert(itemSpecific);
                         }
                     }
                 }
@@ -213,8 +222,8 @@ public class ProductServiceImpl extends ServiceImpl<ProductMapper, Product> impl
             }
             return productMapper.deleteById(product_id) == 1;
         }catch (Exception e){
-
-            return false;
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+            throw new RuntimeException();
         }
     }
 }

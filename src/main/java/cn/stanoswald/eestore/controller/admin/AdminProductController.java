@@ -28,6 +28,9 @@ public class AdminProductController {
     public ResponseEntity<Object> addProduct(@RequestPart("product") Product product, @RequestPart("img") MultipartFile img) {
         try {
             Integer productId = productService.addProduct(product, img);
+            if(productId == null){
+                return new CommonResponse.Builder().error().message("产品添加失败").build();
+            }
             return new CommonResponse.Builder().ok().message("产品添加成功").data("product_id", productId).build();
         } catch (RuntimeException e) {
             return new CommonResponse.Builder().error().message("产品添加失败").build();
@@ -38,7 +41,10 @@ public class AdminProductController {
     public ResponseEntity<Object> delProduct(@RequestParam("product_id") String product_id) {
         try {
             Boolean isDelete = productService.deleteProduct(Integer.valueOf(product_id));
-            return new CommonResponse.Builder().ok().message("产品删除成功").data("isDelete", isDelete).build();
+            if(!isDelete){
+                return new CommonResponse.Builder().error().message("产品删除失败").build();
+            }
+            return new CommonResponse.Builder().ok().message("产品删除成功").build();
         } catch (Exception e) {
             return new CommonResponse.Builder().error().message("产品删除失败").build();
         }
