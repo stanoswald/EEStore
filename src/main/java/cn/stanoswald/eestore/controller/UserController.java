@@ -3,6 +3,9 @@ package cn.stanoswald.eestore.controller;
 import cn.stanoswald.eestore.entity.CommonResponse;
 import cn.stanoswald.eestore.entity.User;
 import cn.stanoswald.eestore.service.UserService;
+import com.baomidou.mybatisplus.core.toolkit.Assert;
+import com.baomidou.mybatisplus.core.toolkit.StringUtils;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
@@ -12,13 +15,13 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.annotation.Resource;
 import java.io.IOException;
 
+@Slf4j
 @RestController
 @RequestMapping("/user/api")
 public class UserController {
 
     @Resource
     UserService userService;
-
 
     @GetMapping("get")
     public ResponseEntity<Object> get(@AuthenticationPrincipal Jwt jwt) {
@@ -28,6 +31,19 @@ public class UserController {
                     .data("user", user).build();
         } catch (Exception e) {
             return new CommonResponse.Builder().message("用户信息查询失败").error().build();
+        }
+    }
+
+    @PostMapping("update")
+    public ResponseEntity<Object> update(@AuthenticationPrincipal Jwt jwt, @RequestBody User user) {
+        try {
+            user.setUid(jwt.getSubject());
+            user.setAvatar(null);
+
+            userService.updateById(user);
+            return new CommonResponse.Builder().message("用户信息更新成功").ok().build();
+        } catch (Exception e) {
+            return new CommonResponse.Builder().message("用户信息更新失败").error().build();
         }
     }
 
