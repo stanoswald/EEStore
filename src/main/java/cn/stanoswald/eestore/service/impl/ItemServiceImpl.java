@@ -9,9 +9,12 @@ import cn.stanoswald.eestore.mapper.ItemSpecificMapper;
 import cn.stanoswald.eestore.mapper.ProductMapper;
 import cn.stanoswald.eestore.mapper.SpecificMapper;
 import cn.stanoswald.eestore.service.ItemService;
+import cn.stanoswald.eestore.service.SpecificService;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.interceptor.TransactionAspectSupport;
 
 import javax.annotation.Resource;
 import java.util.List;
@@ -36,30 +39,70 @@ public class ItemServiceImpl extends ServiceImpl<ItemMapper, Item> implements It
     @Resource
     SpecificMapper specificMapper;
 
+    @Resource
+    SpecificService specificService;
+
+    @Transactional
+    @Override
     public String addItem(Item item){
         try{
             Product product = productMapper.selectById(item.getProductId());
             if (product != null) {
+                itemMapper.insert(item);
                 List<ItemSpecific> itemSpecificList = item.getItemSpecificList();
                 if(itemSpecificList != null){
                     for (ItemSpecific itemSpecific : itemSpecificList){
                         itemSpecific.setItemId(item.getItemId());
-                        itemSpecificMapper.insert(itemSpecific);
-                        if (specificMapper.selectList(Wrappers.lambdaQuery(Specific.class)
-                                .eq(Specific::getSpecificName, itemSpecific.getSpecificName())
-                        ).isEmpty()) {
-                            Specific specific = new Specific();
-                            specific.setSpecificName(itemSpecific.getSpecificName());
-                            specificMapper.insert(specific);
+                        Integer specificId=specificService.addSpecific(itemSpecific.getSpecificName());
+                        if(specificId==null){
+                            specificId=specificMapper.selectOne(Wrappers.lambdaQuery(Specific.class)
+                                    .eq(Specific::getSpecificName,itemSpecific.getSpecificName())
+                            ).getSpecificId();
                         }
+                        itemSpecific.setSpecificId(specificId);
+                        itemSpecificMapper.insert(itemSpecific);
                     }
                 }
-                itemMapper.insert(item);
-                return item.getItemId();
-            }else return null;
-        }catch (Exception e){
+                if(itemMapper.selectById(item.getItemId())!=null){
+                    return item.getItemId();
+                }
+            }
             return null;
+        }catch (Exception e){
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+            throw new RuntimeException();
         }
+    }
+
+    @Transactional
+    @Override
+    public Boolean deleteItem(String itemId){
+        try {
+            List<ItemSpecific> itemSpecificList = itemSpecificMapper.selectList(Wrappers.lambdaQuery(ItemSpecific.class)
+                    .eq(ItemSpecific::getItemId,itemId)
+            );
+            if(itemSpecificList!=null){
+                for (ItemSpecific itemSpecific : itemSpecificList){
+                    itemSpecificMapper.deleteById(itemSpecific);
+                }
+            }
+            return itemMapper.deleteById(itemId) == 1;
+        }catch (Exception e){
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+            throw new RuntimeException();
+        }
+    }
+
+    @Transactional
+    @Override
+    public Boolean updateSale(String itemId, Boolean saleStatus){
+        Item item =new Item();
+        item.setItemId(itemId);
+        Boolean forSale = itemMapper.selectById(itemId).getForSale();
+        if(!saleStatus.equals(forSale)){
+            item.setForSale(saleStatus);
+        }else return false;
+        return itemMapper.updateById(item) == 1;
     }
 }
 

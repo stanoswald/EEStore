@@ -28,7 +28,6 @@ public class Item {
     /**
      * 产品id
      */
-    @JsonIgnore
     private Integer productId;
 
     /**
