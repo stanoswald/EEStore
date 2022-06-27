@@ -26,6 +26,12 @@ public class Item {
     private String itemId;
 
     /**
+     * 产品名
+     */
+    @TableField(exist = false)
+    private String productName;
+
+    /**
      * 产品id
      */
     private Integer productId;

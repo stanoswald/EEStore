@@ -104,5 +104,19 @@ public class ItemServiceImpl extends ServiceImpl<ItemMapper, Item> implements It
         }else return false;
         return itemMapper.updateById(item) == 1;
     }
+
+    @Override
+    public List<Item> getAllItem(){
+        try {
+            List<Item> itemList = itemMapper.selectList(Wrappers.emptyWrapper());
+            for (Item item : itemList) {
+                String productName = productMapper.selectById(item.getProductId()).getProductName();
+                item.setProductName(productName);
+            }
+            return itemList;
+        }catch (Exception e){
+            return null;
+        }
+    }
 }
 

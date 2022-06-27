@@ -19,4 +19,6 @@ public interface ItemService extends IService<Item> {
     Boolean deleteItem(String itemId);
 
     Boolean updateSale(String itemId, Boolean saleStatus);
+
+    List<Item> getAllItem();
 }
