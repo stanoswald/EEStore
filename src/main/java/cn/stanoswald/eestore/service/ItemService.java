@@ -1,6 +1,7 @@
 package cn.stanoswald.eestore.service;
 
 import cn.stanoswald.eestore.entity.Item;
+import cn.stanoswald.eestore.entity.ItemSpecific;
 import com.baomidou.mybatisplus.extension.service.IService;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,4 +22,14 @@ public interface ItemService extends IService<Item> {
     Boolean updateSale(String itemId, Boolean saleStatus);
 
     List<Item> getAllItem();
+
+    Integer addItemSpecific(ItemSpecific itemSpecific);
+
+    @Transactional
+    Boolean delItemSpecific(Integer itemSpecificId);
+
+    @Transactional
+    Boolean updateItemSpecific(ItemSpecific itemSpecific);
+
+    List<ItemSpecific> getItemSpecific();
 }

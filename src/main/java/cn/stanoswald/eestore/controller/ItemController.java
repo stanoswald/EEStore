@@ -2,6 +2,7 @@ package cn.stanoswald.eestore.controller;
 
 import cn.stanoswald.eestore.entity.CommonResponse;
 import cn.stanoswald.eestore.entity.Item;
+import cn.stanoswald.eestore.entity.ItemSpecific;
 import cn.stanoswald.eestore.service.ItemService;
 import cn.stanoswald.eestore.service.impl.ItemServiceImpl;
 import org.springframework.http.ResponseEntity;
@@ -33,6 +34,19 @@ public class ItemController {
         try{
             List<Item> itemList = itemService.getAllItem();
             return new CommonResponse.Builder().ok().message("商品列表").data("ItemList",itemList).build();
+        }catch (Exception e){
+            return new CommonResponse.Builder().error().message("查询失败").build();
+        }
+    }
+
+    @GetMapping("/get/itemSpecific")
+    public ResponseEntity<Object> getItemSpecific(){
+        try{
+            List<ItemSpecific> itemSpecificList = itemService.getItemSpecific();
+            if(itemSpecificList!=null) {
+                return new CommonResponse.Builder().ok().message("商品详情字段表").data("itemSpecificList",itemSpecificList).build();
+            }
+            return new CommonResponse.Builder().error().message("查询失败").build();
         }catch (Exception e){
             return new CommonResponse.Builder().error().message("查询失败").build();
         }

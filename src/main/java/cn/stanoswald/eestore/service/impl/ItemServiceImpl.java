@@ -18,6 +18,7 @@ import org.springframework.transaction.interceptor.TransactionAspectSupport;
 
 import javax.annotation.Resource;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 商品表 服务实现类
@@ -114,6 +115,45 @@ public class ItemServiceImpl extends ServiceImpl<ItemMapper, Item> implements It
                 item.setProductName(productName);
             }
             return itemList;
+        }catch (Exception e){
+            return null;
+        }
+    }
+
+    @Transactional
+    @Override
+    public Integer addItemSpecific(ItemSpecific itemSpecific){
+        if(itemMapper.selectById(itemSpecific.getItemId())!=null && specificMapper.selectById(itemSpecific.getSpecificId())!=null){
+            itemSpecificMapper.insert(itemSpecific);
+            return itemSpecific.getItemSpecificId();
+        }
+        return null;
+    }
+
+    @Transactional
+    @Override
+    public Boolean delItemSpecific(Integer itemSpecificId){
+        return itemSpecificMapper.deleteById(itemSpecificId) == 1;
+    }
+
+    @Transactional
+    @Override
+    public Boolean updateItemSpecific(ItemSpecific itemSpecific){
+        if(itemMapper.selectById(itemSpecific.getItemId())!=null && specificMapper.selectById(itemSpecific.getSpecificId())!=null){
+            return itemSpecificMapper.updateById(itemSpecific) == 1;
+        }
+        return false;
+    }
+
+    @Override
+    public List<ItemSpecific> getItemSpecific(){
+        try{
+            List<ItemSpecific> itemSpecificList = itemSpecificMapper.selectList(Wrappers.emptyWrapper());
+            for (ItemSpecific itemSpecific : itemSpecificList) {
+                Specific specific = specificMapper.selectById(itemSpecific.getSpecificId());
+                itemSpecific.setSpecificName(specific.getSpecificName());
+            }
+            return itemSpecificList;
         }catch (Exception e){
             return null;
         }

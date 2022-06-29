@@ -2,6 +2,7 @@ package cn.stanoswald.eestore.controller.admin;
 
 import cn.stanoswald.eestore.entity.CommonResponse;
 import cn.stanoswald.eestore.entity.Item;
+import cn.stanoswald.eestore.entity.ItemSpecific;
 import cn.stanoswald.eestore.service.ItemService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -58,6 +59,43 @@ public class AdminItemController {
             return new CommonResponse.Builder().ok().message("商品寄售状态更新成功").build();
         }catch (Exception e){
             return new CommonResponse.Builder().error().message("商品寄售状态更新失败").build();
+        }
+    }
+
+    @PostMapping("/add/itemSpecific")
+    public ResponseEntity<Object> addItemSpecific(@RequestBody ItemSpecific itemSpecific){
+        try{
+            Integer itemSpecificId= itemService.addItemSpecific(itemSpecific);
+            if(itemSpecificId!=null) {
+                return new CommonResponse.Builder().ok().message("商品字段详情添加成功").data("itemSpecific_id", itemSpecificId).build();
+            }
+            return new CommonResponse.Builder().error().message("商品字段详情添加失败").build();
+        }catch (Exception e){
+            return new CommonResponse.Builder().error().message("商品字段详情添加失败").build();
+        }
+    }
+
+    @PostMapping("/delete/itemSpecific")
+    public ResponseEntity<Object> deleteItemSpecific(@RequestParam("item_specific_id") Integer itemSpecificId){
+        try{
+            if(itemService.delItemSpecific(itemSpecificId)){
+                return new CommonResponse.Builder().ok().message("商品字段详情删除成功").build();
+            }
+            return new CommonResponse.Builder().error().message("商品字段详情删除失败").build();
+        }catch (Exception e){
+            return new CommonResponse.Builder().error().message("商品字段详情删除失败").build();
+        }
+    }
+
+    @PostMapping("/update/itemSpecific")
+    public ResponseEntity<Object> updateItemSpecific(@RequestBody ItemSpecific itemSpecific){
+        try{
+            if(itemService.updateItemSpecific(itemSpecific)){
+                return new CommonResponse.Builder().ok().message("商品字段详情更新成功").build();
+            }
+            return new CommonResponse.Builder().error().message("商品字段详情更新失败").build();
+        }catch (Exception e){
+            return new CommonResponse.Builder().error().message("商品字段详情更新失败").build();
         }
     }
 }
