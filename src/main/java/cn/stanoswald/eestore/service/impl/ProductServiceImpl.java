@@ -1,6 +1,9 @@
 package cn.stanoswald.eestore.service.impl;
 
-import cn.stanoswald.eestore.entity.*;
+import cn.stanoswald.eestore.entity.Item;
+import cn.stanoswald.eestore.entity.ItemSpecific;
+import cn.stanoswald.eestore.entity.Product;
+import cn.stanoswald.eestore.entity.Specific;
 import cn.stanoswald.eestore.mapper.ItemMapper;
 import cn.stanoswald.eestore.mapper.ItemSpecificMapper;
 import cn.stanoswald.eestore.mapper.ProductMapper;
@@ -15,6 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
 import org.springframework.web.multipart.MultipartFile;
+
 import javax.annotation.Resource;
 import java.io.IOException;
 import java.net.URL;
@@ -224,6 +228,20 @@ public class ProductServiceImpl extends ServiceImpl<ProductMapper, Product> impl
         }catch (Exception e){
             TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
             throw new RuntimeException();
+        }
+    }
+
+    @Transactional
+    @Override
+    public Boolean updateProduct(Product product, MultipartFile productImg){
+        try {
+//            log.info(productImg.toString());
+            if(productImg!=null) {
+                addProductImg(product, productImg);
+            }
+            return productMapper.updateById(product) == 1;
+        }catch (Exception e){
+            return false;
         }
     }
 }

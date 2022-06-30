@@ -49,6 +49,17 @@ public class AdminItemController {
         }
     }
 
+    @PostMapping("/update")
+    public ResponseEntity<Object> updateItem(@RequestBody Item item){
+        try{
+            if(!itemService.updateItem(item)){
+                return new CommonResponse.Builder().error().message("商品更新失败").build();
+            }return new CommonResponse.Builder().ok().message("商品更新成功").build();
+        }catch (Exception e){
+            return new CommonResponse.Builder().error().message("商品更新失败").build();
+        }
+    }
+
     @PostMapping("/isSale")
     public ResponseEntity<Object> isSale(@RequestParam("item_id") String itemId,@RequestParam("for_sale") String forSale){
         try{

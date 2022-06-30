@@ -34,4 +34,7 @@ public interface ProductService extends IService<Product> {
     Product getProductById(String pro_id);
 
     Boolean deleteProduct(Integer product_id);
+
+    @Transactional
+    Boolean updateProduct(Product product, MultipartFile productImg);
 }

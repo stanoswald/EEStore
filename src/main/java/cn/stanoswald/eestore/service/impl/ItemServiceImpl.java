@@ -96,14 +96,28 @@ public class ItemServiceImpl extends ServiceImpl<ItemMapper, Item> implements It
 
     @Transactional
     @Override
+    public Boolean updateItem(Item item){
+        try{
+            return itemMapper.updateById(item) == 1;
+        }catch (Exception e){
+            return false;
+        }
+    }
+
+    @Transactional
+    @Override
     public Boolean updateSale(String itemId, Boolean saleStatus){
-        Item item =new Item();
-        item.setItemId(itemId);
-        Boolean forSale = itemMapper.selectById(itemId).getForSale();
-        if(!saleStatus.equals(forSale)){
-            item.setForSale(saleStatus);
-        }else return false;
-        return itemMapper.updateById(item) == 1;
+        try {
+            Item item = new Item();
+            item.setItemId(itemId);
+            Boolean forSale = itemMapper.selectById(itemId).getForSale();
+            if (!saleStatus.equals(forSale)) {
+                item.setForSale(saleStatus);
+            } else return false;
+            return itemMapper.updateById(item) == 1;
+        }catch (Exception e){
+            return false;
+        }
     }
 
     @Override
@@ -139,10 +153,11 @@ public class ItemServiceImpl extends ServiceImpl<ItemMapper, Item> implements It
     @Transactional
     @Override
     public Boolean updateItemSpecific(ItemSpecific itemSpecific){
-        if(itemMapper.selectById(itemSpecific.getItemId())!=null && specificMapper.selectById(itemSpecific.getSpecificId())!=null){
+        try {
             return itemSpecificMapper.updateById(itemSpecific) == 1;
+        }catch (Exception e){
+            return false;
         }
-        return false;
     }
 
     @Override

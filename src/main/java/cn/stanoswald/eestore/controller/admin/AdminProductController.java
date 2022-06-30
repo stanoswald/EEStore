@@ -49,4 +49,16 @@ public class AdminProductController {
             return new CommonResponse.Builder().error().message("产品删除失败").build();
         }
     }
+
+    @PostMapping("/update")
+    public ResponseEntity<Object> updateProduct(@RequestPart("product") Product product, @RequestPart("img") MultipartFile img){
+        try {
+            if(!productService.updateProduct(product,img)){
+                return new CommonResponse.Builder().error().message("产品更新失败").build();
+            }
+            return new CommonResponse.Builder().ok().message("产品更新成功").build();
+        }catch (Exception e){
+            return new CommonResponse.Builder().error().message("产品更新失败").build();
+        }
+    }
 }
