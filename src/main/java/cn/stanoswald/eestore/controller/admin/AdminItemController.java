@@ -32,7 +32,7 @@ public class AdminItemController {
                 return new CommonResponse.Builder().ok().message("商品添加成功").data("Item_id", itemId).build();
             }return new CommonResponse.Builder().error().message("商品添加失败").build();
         }catch (Exception e){
-            return new CommonResponse.Builder().error().message("商品添加失败").build();
+            return new CommonResponse.Builder().error().message("商品添加失败："+e.getMessage()).build();
         }
     }
 
@@ -45,7 +45,7 @@ public class AdminItemController {
             }
             return new CommonResponse.Builder().ok().message("商品删除成功").build();
         }catch (Exception e){
-            return new CommonResponse.Builder().error().message("商品删除失败").build();
+            return new CommonResponse.Builder().error().message("商品删除失败："+e.getMessage()).build();
         }
     }
 
@@ -56,7 +56,7 @@ public class AdminItemController {
                 return new CommonResponse.Builder().error().message("商品更新失败").build();
             }return new CommonResponse.Builder().ok().message("商品更新成功").build();
         }catch (Exception e){
-            return new CommonResponse.Builder().error().message("商品更新失败").build();
+            return new CommonResponse.Builder().error().message("商品更新失败："+e.getMessage()).build();
         }
     }
 
@@ -69,7 +69,7 @@ public class AdminItemController {
             }
             return new CommonResponse.Builder().ok().message("商品寄售状态更新成功").build();
         }catch (Exception e){
-            return new CommonResponse.Builder().error().message("商品寄售状态更新失败").build();
+            return new CommonResponse.Builder().error().message("商品寄售状态更新失败："+e.getMessage()).build();
         }
     }
 
@@ -82,7 +82,7 @@ public class AdminItemController {
             }
             return new CommonResponse.Builder().error().message("商品字段详情添加失败").build();
         }catch (Exception e){
-            return new CommonResponse.Builder().error().message("商品字段详情添加失败").build();
+            return new CommonResponse.Builder().error().message("商品字段详情添加失败："+e.getMessage()).build();
         }
     }
 
@@ -94,7 +94,7 @@ public class AdminItemController {
             }
             return new CommonResponse.Builder().error().message("商品字段详情删除失败").build();
         }catch (Exception e){
-            return new CommonResponse.Builder().error().message("商品字段详情删除失败").build();
+            return new CommonResponse.Builder().error().message("商品字段详情删除失败："+e.getMessage()).build();
         }
     }
 
@@ -106,7 +106,7 @@ public class AdminItemController {
             }
             return new CommonResponse.Builder().error().message("商品字段详情更新失败").build();
         }catch (Exception e){
-            return new CommonResponse.Builder().error().message("商品字段详情更新失败").build();
+            return new CommonResponse.Builder().error().message("商品字段详情更新失败："+e.getMessage()).build();
         }
     }
 }

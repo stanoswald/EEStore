@@ -7,6 +7,7 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 /**
@@ -34,7 +35,17 @@ public class Product {
      * 产品名
      */
     private String productName;
+    /**
+     * 商品最低价格
+     */
+    @TableField(exist = false)
+    private BigDecimal miniItemPrice;
 
+    /**
+     * 价格最低商品折扣
+     */
+    @TableField(exist = false)
+    private BigDecimal miniItemDiscount;
     /**
      * 产品详情
      */

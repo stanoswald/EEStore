@@ -28,11 +28,11 @@ public class SpecificController {
         try {
             Integer specificId = specificService.addSpecific(specificName);
             if(specificId==null){
-                return new CommonResponse.Builder().error().message("添加失败").build();
+                return new CommonResponse.Builder().error().message("字段添加失败").build();
             }
-            return new CommonResponse.Builder().ok().message("添加成功").data("specificId",specificId).build();
+            return new CommonResponse.Builder().ok().message("字段添加成功").data("specificId",specificId).build();
         }catch (Exception e){
-            return new CommonResponse.Builder().error().message("添加失败").build();
+            return new CommonResponse.Builder().error().message("字段添加失败："+e.getMessage()).build();
         }
     }
 
@@ -45,7 +45,7 @@ public class SpecificController {
             }
             return new CommonResponse.Builder().ok().message("字段删除成功").build();
         }catch (Exception e){
-            return new CommonResponse.Builder().error().message("字段删除失败").build();
+            return new CommonResponse.Builder().error().message("字段删除失败："+e.getMessage()).build();
         }
     }
 }

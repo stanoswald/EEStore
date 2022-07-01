@@ -33,7 +33,7 @@ public class AdminProductController {
             }
             return new CommonResponse.Builder().ok().message("产品添加成功").data("product_id", productId).build();
         } catch (RuntimeException e) {
-            return new CommonResponse.Builder().error().message("产品添加失败").build();
+            return new CommonResponse.Builder().error().message("产品添加失败："+e.getMessage()).build();
         }
     }
 
@@ -42,7 +42,7 @@ public class AdminProductController {
         try {
             Boolean isDelete = productService.deleteProduct(Integer.valueOf(product_id));
             if(!isDelete){
-                return new CommonResponse.Builder().error().message("产品删除失败").build();
+                return new CommonResponse.Builder().error().message("产品删除失败"+ isDelete).build();
             }
             return new CommonResponse.Builder().ok().message("产品删除成功").build();
         } catch (Exception e) {
@@ -58,7 +58,7 @@ public class AdminProductController {
             }
             return new CommonResponse.Builder().ok().message("产品更新成功").build();
         }catch (Exception e){
-            return new CommonResponse.Builder().error().message("产品更新失败").build();
+            return new CommonResponse.Builder().error().message("产品更新失败："+e.getMessage()).build();
         }
     }
 }

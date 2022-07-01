@@ -141,7 +141,7 @@ public class ItemServiceImpl extends ServiceImpl<ItemMapper, Item> implements It
             itemSpecificMapper.insert(itemSpecific);
             return itemSpecific.getItemSpecificId();
         }
-        return null;
+        return 0;
     }
 
     @Transactional
