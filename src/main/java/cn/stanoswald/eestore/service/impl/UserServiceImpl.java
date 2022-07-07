@@ -98,4 +98,18 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
             throw new RuntimeException();
         }
     }
+
+    @Override
+    public Boolean updatePassword(User user, String oldPwd, String newPwd) {
+        try {
+            user = userMapper.selectById(user);
+            if (user.getPassword().equals(oldPwd)) {
+                user.setPassword(newPwd);
+                return userMapper.updateById(user) == 1;
+            } else throw new RuntimeException("原密码不正确");
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            throw e;
+        }
+    }
 }

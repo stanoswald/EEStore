@@ -47,4 +47,6 @@ public interface UserService extends IService<User> {
     URL updateAvatar(String uid, MultipartFile file) throws IOException;
 
     List<User> adminGetAll() throws Exception;
+
+    Boolean updatePassword(User user,String oldPwd,String newPwd) throws Exception;
 }

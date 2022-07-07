@@ -3,8 +3,6 @@ package cn.stanoswald.eestore.controller;
 import cn.stanoswald.eestore.entity.CommonResponse;
 import cn.stanoswald.eestore.entity.User;
 import cn.stanoswald.eestore.service.UserService;
-import com.baomidou.mybatisplus.core.toolkit.Assert;
-import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -58,6 +56,22 @@ public class UserController {
         } catch (IOException e) {
             log.error(e.getMessage());
             return new CommonResponse.Builder().error().message("用户图片更新失败").build();
+        }
+    }
+
+    @PostMapping("update/password")
+    public ResponseEntity<Object> updatePassword(@AuthenticationPrincipal Jwt jwt
+            , @RequestParam("old_password") String oldPassword
+            , @RequestParam("new_password") String newPassword) {
+        try {
+            User user = new User();
+            user.setUid(jwt.getSubject());
+
+            userService.updatePassword(user, oldPassword, newPassword);
+            return new CommonResponse.Builder().message("用户密码更改成功").ok().build();
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            return new CommonResponse.Builder().message("用户密码更改失败").error().build();
         }
     }
 }
