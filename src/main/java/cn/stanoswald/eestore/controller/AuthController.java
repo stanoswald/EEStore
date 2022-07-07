@@ -1,9 +1,12 @@
 package cn.stanoswald.eestore.controller;
 
 import cn.stanoswald.eestore.entity.CommonResponse;
+import cn.stanoswald.eestore.entity.Order;
 import cn.stanoswald.eestore.entity.User;
 import cn.stanoswald.eestore.service.UserService;
 import cn.stanoswald.eestore.service.impl.PersistentLoginServiceImpl;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.AuthenticationException;
@@ -12,7 +15,7 @@ import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
-
+@Slf4j
 @RestController
 @RequestMapping("/auth")
 public class AuthController {
@@ -55,6 +58,7 @@ public class AuthController {
         try {
             persistentLoginService.removeUserTokensByCookie(cookie);
         } catch (Exception e) {
+            log.error(e.getMessage());
             return new CommonResponse.Builder().error().message("注销失败").build();
         }
         return new CommonResponse.Builder().ok().message("注销成功").build();

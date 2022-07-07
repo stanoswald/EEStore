@@ -30,6 +30,7 @@ public class UserController {
             return new CommonResponse.Builder().ok().message("用户信息查询成功")
                     .data("user", user).build();
         } catch (Exception e) {
+            log.error(e.getMessage());
             return new CommonResponse.Builder().message("用户信息查询失败").error().build();
         }
     }
@@ -43,6 +44,7 @@ public class UserController {
             userService.updateById(user);
             return new CommonResponse.Builder().message("用户信息更新成功").ok().build();
         } catch (Exception e) {
+            log.error(e.getMessage());
             return new CommonResponse.Builder().message("用户信息更新失败").error().build();
         }
     }
@@ -54,6 +56,7 @@ public class UserController {
             String imgUrl = userService.updateAvatar(jwt.getSubject(), file).toString();
             return new CommonResponse.Builder().ok().message("用户图片更新成功").data("url", imgUrl).build();
         } catch (IOException e) {
+            log.error(e.getMessage());
             return new CommonResponse.Builder().error().message("用户图片更新失败").build();
         }
     }

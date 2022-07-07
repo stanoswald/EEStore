@@ -9,6 +9,7 @@ import cn.stanoswald.eestore.mapper.OrderMapper;
 import cn.stanoswald.eestore.service.OrderService;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -53,7 +54,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
             return order.getOrderId();
         } catch (Exception e) {
             TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
-            e.printStackTrace();
+            log.error(e.getMessage());
             return null;
         }
     }
@@ -70,7 +71,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
             order.setItemList(orderItemList);
             return order;
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error(e.getMessage());
             throw new RuntimeException();
         }
     }
@@ -83,7 +84,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
                 return null;
             return addOrderItemsToOrders(orderList);
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error(e.getMessage());
             throw new RuntimeException();
         }
     }
@@ -96,7 +97,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
             order.setFinishedTime(LocalDateTime.now());
             return orderMapper.updateById(order) == 1;
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error(e.getMessage());
             return null;
         }
     }
@@ -109,7 +110,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
             order.setAddress(address);
             return orderMapper.updateById(order) == 1;
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error(e.getMessage());
             return null;
         }
     }
@@ -122,7 +123,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
                 return null;
             return addOrderItemsToOrders(orderList);
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error(e.getMessage());
             throw new RuntimeException();
         }
     }
@@ -135,7 +136,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
             order.setShipTime(LocalDateTime.now());
             return orderMapper.updateById(order) == 1;
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error(e.getMessage());
             return null;
         }
     }

@@ -51,7 +51,7 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests((auth) -> auth
                         .antMatchers("/admin/api/**").hasAuthority("ADMIN")
                         .antMatchers("/user/api/**").hasAnyAuthority("USER", "ADMIN")
-                        .antMatchers("/public/api/**").permitAll()
+                        .antMatchers("/public/api/**","/img/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .formLogin(configurer -> configurer

@@ -2,6 +2,7 @@ package cn.stanoswald.eestore.controller.admin;
 
 import cn.stanoswald.eestore.entity.CommonResponse;
 import cn.stanoswald.eestore.service.SpecificService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,6 +17,7 @@ import javax.annotation.Resource;
  * @author yjw
  * @since 2022-06-16
  */
+@Slf4j
 @RestController
 @RequestMapping("/admin/api/specific")
 public class SpecificController {
@@ -32,6 +34,7 @@ public class SpecificController {
             }
             return new CommonResponse.Builder().ok().message("字段添加成功").data("specificId",specificId).build();
         }catch (Exception e){
+            log.error(e.getMessage());
             return new CommonResponse.Builder().error().message("字段添加失败："+e.getMessage()).build();
         }
     }
@@ -45,6 +48,7 @@ public class SpecificController {
             }
             return new CommonResponse.Builder().ok().message("字段删除成功").build();
         }catch (Exception e){
+            log.error(e.getMessage());
             return new CommonResponse.Builder().error().message("字段删除失败："+e.getMessage()).build();
         }
     }

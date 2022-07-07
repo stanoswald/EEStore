@@ -4,6 +4,7 @@ import cn.stanoswald.eestore.entity.CommonResponse;
 import cn.stanoswald.eestore.entity.Item;
 import cn.stanoswald.eestore.entity.ItemSpecific;
 import cn.stanoswald.eestore.service.ItemService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,6 +18,7 @@ import javax.annotation.Resource;
  * @author yjw
  * @since 2022-06-15
  */
+@Slf4j
 @RestController
 @RequestMapping("/admin/api/item")
 public class AdminItemController {
@@ -32,6 +34,7 @@ public class AdminItemController {
                 return new CommonResponse.Builder().ok().message("商品添加成功").data("Item_id", itemId).build();
             }return new CommonResponse.Builder().error().message("商品添加失败").build();
         }catch (Exception e){
+            log.error(e.getMessage());
             return new CommonResponse.Builder().error().message("商品添加失败："+e.getMessage()).build();
         }
     }
@@ -45,6 +48,7 @@ public class AdminItemController {
             }
             return new CommonResponse.Builder().ok().message("商品删除成功").build();
         }catch (Exception e){
+            log.error(e.getMessage());
             return new CommonResponse.Builder().error().message("商品删除失败："+e.getMessage()).build();
         }
     }
@@ -56,6 +60,7 @@ public class AdminItemController {
                 return new CommonResponse.Builder().error().message("商品更新失败").build();
             }return new CommonResponse.Builder().ok().message("商品更新成功").build();
         }catch (Exception e){
+            log.error(e.getMessage());
             return new CommonResponse.Builder().error().message("商品更新失败："+e.getMessage()).build();
         }
     }
@@ -69,6 +74,7 @@ public class AdminItemController {
             }
             return new CommonResponse.Builder().ok().message("商品寄售状态更新成功").build();
         }catch (Exception e){
+            log.error(e.getMessage());
             return new CommonResponse.Builder().error().message("商品寄售状态更新失败："+e.getMessage()).build();
         }
     }
@@ -82,6 +88,7 @@ public class AdminItemController {
             }
             return new CommonResponse.Builder().error().message("商品字段详情添加失败").build();
         }catch (Exception e){
+            log.error(e.getMessage());
             return new CommonResponse.Builder().error().message("商品字段详情添加失败："+e.getMessage()).build();
         }
     }
@@ -94,6 +101,7 @@ public class AdminItemController {
             }
             return new CommonResponse.Builder().error().message("商品字段详情删除失败").build();
         }catch (Exception e){
+            log.error(e.getMessage());
             return new CommonResponse.Builder().error().message("商品字段详情删除失败："+e.getMessage()).build();
         }
     }
@@ -106,6 +114,7 @@ public class AdminItemController {
             }
             return new CommonResponse.Builder().error().message("商品字段详情更新失败").build();
         }catch (Exception e){
+            log.error(e.getMessage());
             return new CommonResponse.Builder().error().message("商品字段详情更新失败："+e.getMessage()).build();
         }
     }

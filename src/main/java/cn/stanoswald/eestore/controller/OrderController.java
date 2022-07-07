@@ -4,6 +4,7 @@ import cn.stanoswald.eestore.entity.CommonResponse;
 import cn.stanoswald.eestore.entity.Order;
 import cn.stanoswald.eestore.service.OrderService;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -19,6 +20,7 @@ import java.util.List;
  * @author StanOswald
  * @since 2022-06-15
  */
+@Slf4j
 @RestController
 @RequestMapping("/user/api/order")
 public class OrderController {
@@ -48,6 +50,7 @@ public class OrderController {
             Order order = orderService.get(orderId);
             return new CommonResponse.Builder().ok().message("订单获取成功").data("order", order).build();
         } catch (RuntimeException e) {
+            log.error(e.getMessage());
             return new CommonResponse.Builder(HttpStatus.INTERNAL_SERVER_ERROR).message("订单获取失败").build();
         }
     }
@@ -58,6 +61,7 @@ public class OrderController {
             List<Order> orderList = orderService.getAll(jwt.getSubject());
             return new CommonResponse.Builder().ok().message("用户全部订单获取成功").data("order_list", orderList).build();
         } catch (RuntimeException e) {
+            log.error(e.getMessage());
             return new CommonResponse.Builder().error().message("用户全部订单获取失败").build();
         }
     }
@@ -68,6 +72,7 @@ public class OrderController {
             List<Order> toBeDelivered = orderService.getToBeDelivered();
             return new CommonResponse.Builder().ok().message("待发货订单获取成功").data("orders", toBeDelivered).build();
         } catch (RuntimeException e) {
+            log.error(e.getMessage());
             return new CommonResponse.Builder().error().message("待发货订单获取失败").build();
         }
     }

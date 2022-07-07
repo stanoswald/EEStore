@@ -5,6 +5,7 @@ import cn.stanoswald.eestore.entity.Item;
 import cn.stanoswald.eestore.entity.Product;
 import cn.stanoswald.eestore.service.ProductService;
 import cn.stanoswald.eestore.service.impl.ProductServiceImpl;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,6 +21,7 @@ import java.util.Map;
  * @author yjw
  * @since 2022-06-16
  */
+@Slf4j
 @RestController
 @RequestMapping("/public/api/product")
 public class ProductController {
@@ -33,6 +35,7 @@ public class ProductController {
             return new CommonResponse.Builder().ok().message("产品列表")
                     .data("product_list",list).build();
         }catch (Exception e){
+            log.error(e.getMessage());
             return new CommonResponse.Builder().message("查询失败").error().build();
         }
     }
@@ -44,6 +47,7 @@ public class ProductController {
             return new CommonResponse.Builder().ok().message("当前分类产品")
                     .data("productCategory",list).build();
         }catch (Exception e){
+            log.error(e.getMessage());
             return new CommonResponse.Builder().message("查询失败").error().build();
         }
     }
@@ -55,6 +59,7 @@ public class ProductController {
             return new CommonResponse.Builder().ok().message("商品子类型")
                     .data("product",product).build();
         }catch (Exception e){
+            log.error(e.getMessage());
             return new CommonResponse.Builder().message("查询失败").error().build();
         }
     }
@@ -65,6 +70,7 @@ public class ProductController {
             List<Product> productList = productService.getAllProduct();
             return new CommonResponse.Builder().ok().message("产品列表").data("productList",productList).build();
         }catch (Exception e){
+            log.error(e.getMessage());
             return new CommonResponse.Builder().error().message("查询失败").build();
         }
     }
