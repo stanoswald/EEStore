@@ -67,11 +67,11 @@ public class UserController {
             User user = new User();
             user.setUid(jwt.getSubject());
 
-            userService.updatePassword(user, oldPassword, newPassword);
-            return new CommonResponse.Builder().message("用户密码更改成功").ok().build();
+            return userService.updatePassword(user, oldPassword, newPassword) ?
+                    new CommonResponse.Builder().message("用户密码更改成功").ok().build() :
+                    new CommonResponse.Builder().message("用户密码更改失败").error().build();
         } catch (Exception e) {
-            log.error(e.getMessage());
-            return new CommonResponse.Builder().message("用户密码更改失败").error().build();
+            return new CommonResponse.Builder().message(e.getMessage()).error().build();
         }
     }
 }

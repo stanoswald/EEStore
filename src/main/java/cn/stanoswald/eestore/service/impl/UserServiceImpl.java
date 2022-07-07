@@ -8,6 +8,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.jwt.Jwt;
@@ -25,7 +26,7 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-
+@Slf4j
 @Service
 public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements UserService {
 
@@ -103,8 +104,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     public Boolean updatePassword(User user, String oldPwd, String newPwd) {
         try {
             user = userMapper.selectById(user);
-            if (user.getPassword().equals(oldPwd)) {
-                user.setPassword(newPwd);
+            if (passwordEncoder.matches(oldPwd,user.getPassword())) {
+                user.setPassword(passwordEncoder.encode(newPwd));
                 return userMapper.updateById(user) == 1;
             } else throw new RuntimeException("原密码不正确");
         } catch (Exception e) {

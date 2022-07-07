@@ -15,6 +15,7 @@ import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+
 @Slf4j
 @RestController
 @RequestMapping("/auth")
@@ -71,6 +72,21 @@ public class AuthController {
             return new CommonResponse.Builder().ok().message("更新token成功").data("token", token.getTokenValue()).build();
         } catch (Exception e) {
             return new CommonResponse.Builder().error().message("更新token失败").build();
+        }
+
+    }
+
+    @PostMapping("register")
+    public ResponseEntity<Object> register(String username, String password) {
+        try {
+            User user = new User();
+            user.setUsername(username);
+            user.setPassword(password);
+            user.setRole("USER");
+            String uid = userService.register(user);
+            return new CommonResponse.Builder().ok().message("注册成功").data("uid", uid).build();
+        } catch (Exception e) {
+            return new CommonResponse.Builder().error().message("注册失败").build();
         }
 
     }
