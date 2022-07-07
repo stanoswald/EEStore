@@ -7,6 +7,7 @@ import cn.stanoswald.eestore.mapper.ItemMapper;
 import cn.stanoswald.eestore.mapper.OrderItemMapper;
 import cn.stanoswald.eestore.mapper.OrderMapper;
 import cn.stanoswald.eestore.service.OrderService;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.extern.slf4j.Slf4j;
@@ -26,6 +27,7 @@ import java.util.stream.Collectors;
  * @author StanOswald
  * @since 2022-06-15
  */
+@Slf4j
 @Service
 public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements OrderService {
 
@@ -48,8 +50,8 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
             order.getItemList().stream()
                     .peek(orderItem -> orderItem.setOrderId(order.getOrderId()))
                     .forEach(orderItemMapper::insert);
-            for (OrderItem orderItem : order.getItemList()){
-                reduceItem(orderItem.getItemId(),orderItem.getItemCount());
+            for (OrderItem orderItem : order.getItemList()) {
+                reduceItem(orderItem.getItemId(), orderItem.getItemCount());
             }
             return order.getOrderId();
         } catch (Exception e) {
@@ -85,6 +87,15 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
             return addOrderItemsToOrders(orderList);
         } catch (Exception e) {
             log.error(e.getMessage());
+            throw new RuntimeException();
+        }
+    }
+
+    @Override
+    public List<Order> adminGetAll() throws RuntimeException {
+        try {
+            return orderMapper.selectList(new QueryWrapper<>());
+        } catch (Exception e) {
             throw new RuntimeException();
         }
     }
@@ -152,15 +163,15 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
         return orderList;
     }
 
-    private Boolean reduceItem(String itemId,Integer item_count){
+    private void reduceItem(String itemId, Integer item_count) {
         Item item = new Item();
         item.setItemId(itemId);
         Integer itemStock = itemMapper.selectById(itemId).getItemStock();
-        if(itemStock >= item_count) {
+        if (itemStock >= item_count) {
             item.setItemStock((itemStock - item_count));
-        }else {
-            return false;
+        } else {
+            return;
         }
-        return itemMapper.updateById(item) == 1;
+        itemMapper.updateById(item);
     }
 }

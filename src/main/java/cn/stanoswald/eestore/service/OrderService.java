@@ -38,6 +38,13 @@ public interface OrderService extends IService<Order> {
     List<Order> getAll(String uid);
 
     /**
+     * 管理员获取所有订单
+     *
+     * @return 所有订单列表
+     */
+    List<Order> adminGetAll();
+
+    /**
      * 确认收货
      *
      * @param orderId 订单Id

@@ -15,7 +15,7 @@ import java.util.Objects;
 
 @Data
 @TableName("tbl_user")
-@JsonIgnoreProperties({"password", "role", "enable"})
+@JsonIgnoreProperties({"password"})
 public class User implements UserDetails {
 
     @TableId

@@ -4,6 +4,7 @@ import cn.stanoswald.eestore.entity.User;
 import cn.stanoswald.eestore.mapper.UserMapper;
 import cn.stanoswald.eestore.service.UserService;
 import cn.stanoswald.eestore.util.ImgUtil;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -20,6 +21,7 @@ import javax.annotation.Resource;
 import java.io.IOException;
 import java.net.URL;
 import java.time.Instant;
+import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -86,5 +88,14 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
             userMapper.updateById(user);
         }
         return url;
+    }
+
+    @Override
+    public List<User> adminGetAll() {
+        try {
+            return userMapper.selectList(new QueryWrapper<>());
+        } catch (Exception e) {
+            throw new RuntimeException();
+        }
     }
 }
