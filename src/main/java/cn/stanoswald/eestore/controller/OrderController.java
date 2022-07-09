@@ -76,18 +76,4 @@ public class OrderController {
             return new CommonResponse.Builder().error().message("待发货订单获取失败").build();
         }
     }
-
-    @PostMapping("modify_address")
-    public ResponseEntity<Object> modifyAddress(@RequestParam("order_id") String orderId, @RequestParam("address") String address) {
-        return orderService.modifyAddress(address, orderId) ?
-                new CommonResponse.Builder().ok().message("收货地址修改成功").build()
-                : new CommonResponse.Builder().error().message("收货地址修改失败").build();
-    }
-
-    @PostMapping("ship")
-    public ResponseEntity<Object> ship(@RequestParam("order_id") String orderId) {
-        return orderService.ship(orderId) ?
-                new CommonResponse.Builder().ok().message("订单发货成功").build()
-                : new CommonResponse.Builder().error().message("订单发货失败").build();
-    }
 }
