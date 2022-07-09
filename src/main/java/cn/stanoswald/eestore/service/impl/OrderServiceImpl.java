@@ -3,9 +3,11 @@ package cn.stanoswald.eestore.service.impl;
 import cn.stanoswald.eestore.entity.Item;
 import cn.stanoswald.eestore.entity.Order;
 import cn.stanoswald.eestore.entity.OrderItem;
+import cn.stanoswald.eestore.entity.Product;
 import cn.stanoswald.eestore.mapper.ItemMapper;
 import cn.stanoswald.eestore.mapper.OrderItemMapper;
 import cn.stanoswald.eestore.mapper.OrderMapper;
+import cn.stanoswald.eestore.mapper.ProductMapper;
 import cn.stanoswald.eestore.service.OrderService;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
@@ -39,6 +41,9 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
 
     @Resource
     ItemMapper itemMapper;
+
+    @Resource
+    ProductMapper productMapper;
 
     @Transactional
     @Override
@@ -159,7 +164,10 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
                 .select(info -> !info.getColumn().equals("item_order_id"))
                 .in(OrderItem::getOrderId, orderIdSet));
         Map<String, List<OrderItem>> resMap = orderItemList.stream().collect(Collectors.groupingBy(OrderItem::getOrderId));
-        orderList.forEach(order -> order.setItemList(resMap.get(order.getOrderId())));
+        orderList.forEach(order -> {
+            order.setItemList(resMap.get(order.getOrderId()));
+            setOrderCover(order);
+        });
         return orderList;
     }
 
@@ -173,5 +181,15 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
             return;
         }
         itemMapper.updateById(item);
+    }
+
+    private void setOrderCover(Order order) {
+        List<OrderItem> itemList = order.getItemList();
+        if (Optional.ofNullable(itemList).isEmpty())
+            return;
+        Item firstItem = itemMapper.selectById(itemList.get(0).getItemId());
+        Product firstProduct = productMapper.selectById(firstItem.getProductId());
+        order.setCover(firstProduct.getProductImg());
+        order.setTitle(firstProduct.getProductName() + (itemList.size() > 1 ? "..." : ""));
     }
 }

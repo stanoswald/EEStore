@@ -68,4 +68,9 @@ public class Order {
     @TableField(exist = false)
     private List<OrderItem> itemList;
 
+    @TableField(exist = false)
+    private String cover;
+
+    @TableField(exist = false)
+    private String title;
 }
