@@ -60,4 +60,8 @@ public class SpecificServiceImpl extends ServiceImpl<SpecificMapper, Specific>im
         }
     }
 
+    @Override
+    public List<Specific> getAll(){
+        return specificMapper.selectList(Wrappers.emptyWrapper());
+    }
 }

@@ -1,15 +1,14 @@
 package cn.stanoswald.eestore.controller.admin;
 
 import cn.stanoswald.eestore.entity.CommonResponse;
+import cn.stanoswald.eestore.entity.Specific;
 import cn.stanoswald.eestore.service.SpecificService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import java.util.List;
 
 /**
  * 商品详情字段表 前端控制器
@@ -50,6 +49,16 @@ public class SpecificController {
         }catch (Exception e){
             log.error(e.getMessage());
             return new CommonResponse.Builder().error().message("字段删除失败："+e.getMessage()).build();
+        }
+    }
+
+    @GetMapping("/get/all")
+    public ResponseEntity<Object> getAll(){
+        try {
+            List<Specific> specifics = specificService.getAll();
+            return new CommonResponse.Builder().ok().message("字段列表").data("specificList",specifics).build();
+        }catch (Exception e){
+            return new CommonResponse.Builder().error().message("查询失败").build();
         }
     }
 }
