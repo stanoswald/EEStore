@@ -39,24 +39,4 @@ public class CategoryController {
             return new CommonResponse.Builder().error().build();
         }
     }
-
-    //添加分类
-    @PostMapping("/add")
-    public ResponseEntity<Object> addCategory(@RequestParam("cat_name") String cat_name){
-        if(categoryService.addCategory(cat_name)){
-            return new CommonResponse.Builder().ok().message("添加成功").data("isTrue", true).build();
-        }else {
-            return new CommonResponse.Builder().error().message("添加失败").data("isTrue", false).build();
-        }
-    }
-
-    //删除分类
-    @PostMapping("/delete")
-    public ResponseEntity<Object> delCategory(@RequestParam("cat_name") String cat_name){
-        if(categoryService.delCategory(cat_name)){
-            return new CommonResponse.Builder().ok().message("删除成功").data("isTrue", true).build();
-        }else {
-            return new CommonResponse.Builder().error().message("删除失败").data("isTrue", false).build();
-        }
-    }
 }
